@@ -12,7 +12,7 @@ build-publish:
   stage: package
   script:
     - echo " RESTORING NUGET PACKAGES "
-    - apt-get update && apt-get install -y nuget git
+    - sudo apt-get update && sudo apt-get install -y nuget git
     - nuget sources Add -Name ${NEXUS_REPOSITORY} -Source ${NEXUS_SERVER}
     - nuget setapikey ${NEXUS_NUGET_KEY} -source ${NEXUS_SERVER}
     - dotnet restore
