@@ -1,0 +1,24 @@
+variables:
+  NEXUS_REPOSITORY: Baget
+  NEXUS_SERVER: http://192.168.1.230/v3/index.json
+  NEXUS_NUGET_KEY: a799de4833d22310633037eb750eb0b0119f4324
+  ARTIFACT_PATH: /sln/artifacts
+
+stages:
+  - package
+
+build-publish:
+  image: mcr.microsoft.com/dotnet/core/sdk:3.1
+  stage: package
+  script:
+    - echo " RESTORING NUGET PACKAGES "
+    - apt-get update && apt-get install -y nuget git
+    - nuget sources Add -Name ${NEXUS_REPOSITORY} -Source ${NEXUS_SERVER}
+    - nuget setapikey ${NEXUS_NUGET_KEY} -source ${NEXUS_SERVER}
+    - dotnet restore
+    - echo " BUILDING SOLUTION "
+    - dotnet build /p:PackageVersion="$(date +'%Y.%m.%d').$(git rev-list --count HEAD)" --no-restore -c Release
+    - echo " GENERATING NUGET PACKAGE "
+    - dotnet pack  -c Release --no-restore --no-build /p:PackageVersion="$(date +'%Y.%m.%d').$(git rev-list --count HEAD)" -o ${ARTIFACT_PATH}
+    - echo " PUBLISHING NUGET PACKAGE "
+    - dotnet nuget push ${ARTIFACT_PATH}/*.nupkg --source ${NEXUS_SERVER} --api-key ${NEXUS_NUGET_KEY}
