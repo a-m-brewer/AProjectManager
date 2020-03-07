@@ -2,6 +2,13 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AProjectManager", "AProjectManager\AProjectManager.csproj", "{4C00861F-F961-4BF8-85FC-89E90E87AE7F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AProjectManager.Cli", "AProjectManager.Cli\AProjectManager.Cli.csproj", "{445668FD-DF41-4267-9BD7-4C6F29C50121}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{7F47DF2E-DBDF-4E9B-9A08-65C49976D0AF}"
+ProjectSection(SolutionItems) = preProject
+	.gitignore = .gitignore
+EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +19,9 @@ Global
 		{4C00861F-F961-4BF8-85FC-89E90E87AE7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4C00861F-F961-4BF8-85FC-89E90E87AE7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4C00861F-F961-4BF8-85FC-89E90E87AE7F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{445668FD-DF41-4267-9BD7-4C6F29C50121}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{445668FD-DF41-4267-9BD7-4C6F29C50121}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{445668FD-DF41-4267-9BD7-4C6F29C50121}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{445668FD-DF41-4267-9BD7-4C6F29C50121}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
