@@ -5,11 +5,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Avoid.Cli" Version="2020.3.7.6" />
+      <ProjectReference Include="..\AProjectManager.Domain.Git\AProjectManager.Domain.Git.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\AProjectManager.Git\AProjectManager.Git.csproj" />
+      <PackageReference Include="Avoid.Cli" Version="2020.3.7.6" />
     </ItemGroup>
 
 </Project>

@@ -10,6 +10,10 @@ ProjectSection(SolutionItems) = preProject
 	.gitlab-ci.yml = .gitlab-ci.yml
 EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AProjectManager.Domain.Git", "AProjectManager.Domain.Git\AProjectManager.Domain.Git.csproj", "{0B639F7E-47AB-4CE5-9FB0-E31C538517FD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AProjectManager.Git", "AProjectManager.Git\AProjectManager.Git.csproj", "{60E5AA14-D065-44E4-8913-FA7D827E45BE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +28,13 @@ Global
 		{445668FD-DF41-4267-9BD7-4C6F29C50121}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{445668FD-DF41-4267-9BD7-4C6F29C50121}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{445668FD-DF41-4267-9BD7-4C6F29C50121}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B639F7E-47AB-4CE5-9FB0-E31C538517FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B639F7E-47AB-4CE5-9FB0-E31C538517FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B639F7E-47AB-4CE5-9FB0-E31C538517FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B639F7E-47AB-4CE5-9FB0-E31C538517FD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60E5AA14-D065-44E4-8913-FA7D827E45BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60E5AA14-D065-44E4-8913-FA7D827E45BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60E5AA14-D065-44E4-8913-FA7D827E45BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60E5AA14-D065-44E4-8913-FA7D827E45BE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
