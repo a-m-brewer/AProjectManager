@@ -2,7 +2,7 @@ variables:
   NEXUS_REPOSITORY: Baget
   NEXUS_SERVER: http://192.168.1.230/v3/index.json
   NEXUS_NUGET_KEY: a799de4833d22310633037eb750eb0b0119f4324
-  ARTIFACT_PATH: /sln/artifacts
+  ARTIFACT_PATH: /sln/artifacts/aprojectmanager
 
 stages:
   - package
@@ -11,6 +11,7 @@ build-publish:
   image: mcr.microsoft.com/dotnet/core/sdk:3.1
   stage: package
   script:
+    - mkdir -p ${ARTIFACT_PATH}
     - dotnet restore
     - echo " BUILDING SOLUTION "
     - dotnet build /p:PackageVersion="$(date +'%Y.%m.%d').$(git rev-list --count HEAD)" --no-restore -c Release
@@ -18,4 +19,4 @@ build-publish:
     - dotnet pack  -c Release --no-restore --no-build /p:PackageVersion="$(date +'%Y.%m.%d').$(git rev-list --count HEAD)" -o ${ARTIFACT_PATH}
     - echo " PUBLISHING NUGET PACKAGE "
     - dotnet nuget push ${ARTIFACT_PATH}/*.nupkg --source ${NEXUS_SERVER} --api-key ${NEXUS_NUGET_KEY}
-    - rm -rf /sln/artifacts/*
+    - rm -rf ${ARTIFACT_PATH}
