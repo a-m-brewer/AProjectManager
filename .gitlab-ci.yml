@@ -11,10 +11,6 @@ build-publish:
   image: mcr.microsoft.com/dotnet/core/sdk:3.1
   stage: package
   script:
-    - echo " RESTORING NUGET PACKAGES "
-    - sudo apt-get update && sudo apt-get install -y nuget git
-    - nuget sources Add -Name ${NEXUS_REPOSITORY} -Source ${NEXUS_SERVER}
-    - nuget setapikey ${NEXUS_NUGET_KEY} -source ${NEXUS_SERVER}
     - dotnet restore
     - echo " BUILDING SOLUTION "
     - dotnet build /p:PackageVersion="$(date +'%Y.%m.%d').$(git rev-list --count HEAD)" --no-restore -c Release
