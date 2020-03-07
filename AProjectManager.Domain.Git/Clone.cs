@@ -7,14 +7,14 @@ namespace AProjectManager.Domain.Git
             
         }
 
-        public Repository Local { get; private set; }
-        public Repository Remote { get; private set; }
+        public IRepository Local { get; private set; }
+        public IRepository Remote { get; private set; }
 
         public static Clone Create(string localLocation, string remoteLocation, string name)
         {
             return new Clone
             {
-                Local = new Repository
+                Local = new LocalRepository
                 {
                     Location = localLocation,
                     Name = name

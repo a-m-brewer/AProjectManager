@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using AProjectManager.Domain.Git;
 using AProjectManager.Git;
+using Avoid.Cli;
 
 namespace AProjectManager.Cli
 {
@@ -8,14 +10,18 @@ namespace AProjectManager.Cli
     {
         static void Main(string[] args)
         {
-            var clone = Clone.Create("/Users/adambrewer/source/avoid-plugins",
+            var clone = Clone.Create("~/source/avoid-plugins",
                 "http://avoid-network.xyz/a-m-brewer/avoid-plugins.git", "avoid-plugin");
-            
-            var repositoryManager = new RepositoryManager();
 
-            var process = repositoryManager.Clone(clone);
+            var process = new List<IProcess>
+            {
+                RepositoryManager.Clone(clone),
+                RepositoryManager.Fetch((LocalRepository)clone.Local)
+            };
 
-            process.Start();
+            var runnable = process.ToRunnableProcess();
+
+            runnable.Start();
         }
     }
 }

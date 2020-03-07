@@ -1,8 +1,8 @@
 namespace AProjectManager.Domain.Git
 {
-    public class Repository
+    public class Repository : IRepository
     {
         public string Name { get; set; }
-        public string Location { get; set; }
+        public virtual string Location { get; set; }
     }
 }
