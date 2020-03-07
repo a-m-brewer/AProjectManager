@@ -18,3 +18,4 @@ build-publish:
     - dotnet pack  -c Release --no-restore --no-build /p:PackageVersion="$(date +'%Y.%m.%d').$(git rev-list --count HEAD)" -o ${ARTIFACT_PATH}
     - echo " PUBLISHING NUGET PACKAGE "
     - dotnet nuget push ${ARTIFACT_PATH}/*.nupkg --source ${NEXUS_SERVER} --api-key ${NEXUS_NUGET_KEY}
+    - rm -rf /sln/artifacts/*
