@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace AProjectManager.Domain.Git
 {
     public class Repository : IRepository

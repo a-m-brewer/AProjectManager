@@ -9,7 +9,9 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\AProjectManager.BitBucket\AProjectManager.BitBucket.csproj" />
       <ProjectReference Include="..\AProjectManager.Git\AProjectManager.Git.csproj" />
+      <ProjectReference Include="..\AProjectManager.Persistence.FileData\AProjectManager.Persistence.FileData.csproj" />
     </ItemGroup>
 
 </Project>
