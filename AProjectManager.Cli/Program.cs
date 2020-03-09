@@ -10,10 +10,7 @@ namespace AProjectManager.Cli
         {
             var tasks = new List<Task>();
             
-            var testArgs = new[]
-                {"-l", "bitbucket", "-u", "mkuRcCtmt7LTRHn95x", "-p", "rB9vkEMEwbb89Er38t2cEAFrawn2Gbut"};
-            
-            Parser.Default.ParseArguments<CliArguments>(testArgs)
+            Parser.Default.ParseArguments<CliArguments>(args)
                 .WithParsed(passed => tasks.Add(new App().Run(passed)))
                 .WithNotParsed(failure => new AppError().HandleErrors(failure));
 
