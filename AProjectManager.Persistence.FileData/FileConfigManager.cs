@@ -1,3 +1,6 @@
+using System;
+using System.IO;
+
 namespace AProjectManager.Persistence.FileData
 {
     public class FileConfigManager : IFileConfigManager
@@ -10,13 +13,12 @@ namespace AProjectManager.Persistence.FileData
         public FileConfigManager(
             IDataFolderProvider folderProvider,
             IFileManager fileManager,
-            IConfigManager configManager,
-            string configFolderPath)
+            IConfigManager configManager)
         {
             _folderProvider = folderProvider;
             _fileManager = fileManager;
             _configManager = configManager;
-            _configFolderPath = configFolderPath;
+            _configFolderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".config/aprojectmanager");
         }
 
 

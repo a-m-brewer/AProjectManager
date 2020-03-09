@@ -7,6 +7,4 @@ namespace AProjectManager
     {
         Task Login(AuthorizationCredentials authorizationCredentials);
     }
-    
-    public interface IBitBucketLoginManager : ILoginManager {}
 }

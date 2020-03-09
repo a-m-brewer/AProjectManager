@@ -5,7 +5,7 @@ using AProjectManager.Persistence.FileData;
 
 namespace AProjectManager
 {
-    public class BitBucketLoginManager : IBitBucketLoginManager
+    public class BitBucketLoginManager : ILoginManager
     {
         private readonly IFileConfigManager _fileConfigManager;
         private readonly IBitBucketClient _client;
