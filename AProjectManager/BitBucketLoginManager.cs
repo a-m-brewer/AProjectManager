@@ -1,6 +1,9 @@
 using System.Threading.Tasks;
 using AProjectManager.BitBucket;
+using AProjectManager.Constants;
 using AProjectManager.Domain.BitBucket;
+using AProjectManager.Interfaces;
+using AProjectManager.Models;
 using AProjectManager.Persistence.FileData;
 
 namespace AProjectManager
@@ -17,8 +20,8 @@ namespace AProjectManager
             _fileConfigManager = fileConfigManager;
             _client = client;
         }
-        
-        public async Task Login(AuthorizationCredentials authorizationCredentials)
+
+        public async Task<TokenDto> Login(AuthorizationCredentials authorizationCredentials)
         {
             var existingToken = _fileConfigManager.GetFromFile<TokenDto>(ConfigFiles.Token);
 
@@ -26,21 +29,38 @@ namespace AProjectManager
             {
                 var newToken = await _client.Authorize(authorizationCredentials);
                 _fileConfigManager.WriteData(newToken.ToPersistenceToken(), ConfigFiles.Token);
-                return;
+                return newToken;
             }
 
             if (!existingToken.Expired)
             {
-                return;
+                return existingToken;
             }
             
-            var refreshedToken = await _client.Authorize(new RefreshTokenRequest
+            var refreshedToken = await _client.AuthorizeAsync(new RefreshTokenRequest
             {
                 AuthorizationCredentials = authorizationCredentials,
                 RefreshToken = existingToken.Token.RefreshToken
             });
             
             _fileConfigManager.WriteData(refreshedToken.ToPersistenceToken(), ConfigFiles.Token);
+
+            return refreshedToken;
+        }
+
+        public User GetUser()
+        {
+            var existingUser = _fileConfigManager.GetFromFile<User>(ConfigFiles.User);
+            return existingUser;
+        }
+
+        public User RegisterUser(string username, string password)
+        {
+            return _fileConfigManager.WriteData(new User
+            {
+                Username = username,
+                Password = password
+            }, ConfigFiles.User);
         }
     }
 }

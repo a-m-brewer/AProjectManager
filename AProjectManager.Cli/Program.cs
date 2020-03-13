@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using AProjectManager.Cli.Models;
 using CommandLine;
 
 namespace AProjectManager.Cli
@@ -10,9 +12,20 @@ namespace AProjectManager.Cli
         {
             var tasks = new List<Task>();
             
-            Parser.Default.ParseArguments<CliArguments>(args)
-                .WithParsed(passed => tasks.Add(new App().Run(passed)))
-                .WithNotParsed(failure => new AppError().HandleErrors(failure));
+            var app = new App();
+
+            Parser.Default.ParseArguments<LoginVerb, CloneVerb, GroupVerb>(args)
+                .WithParsed<LoginVerb>(verb => tasks.Add(app.Login(verb)))
+                .WithParsed<CloneVerb>(verb => tasks.Add(app.Clone(verb)))
+                .WithParsed<GroupVerb>(verb => tasks.Add(app.RepositoryGroup(verb)))
+                .WithNotParsed(errors =>
+                {
+                    foreach (var error in errors)
+                    {
+                        Console.WriteLine(error);
+                    }
+                });
+               
 
             await Task.WhenAll(tasks);
         }

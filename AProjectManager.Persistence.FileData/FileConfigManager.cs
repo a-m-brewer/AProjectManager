@@ -22,12 +22,14 @@ namespace AProjectManager.Persistence.FileData
         }
 
 
-        public void WriteData<T>(T obj, string fileName)
+        public T WriteData<T>(T obj, string fileName)
         {
             fileName = fileName.EndsWith(".yml") ? fileName : $"{fileName}.yml";
             var filePath = _folderProvider.GetPathOfFile(_configFolderPath, fileName);
             var objString = _configManager.Serialize(obj);
             _fileManager.WriteData(filePath, objString);
+
+            return obj;
         }
 
         public T GetFromFile<T>(string fileName)

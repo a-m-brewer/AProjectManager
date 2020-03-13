@@ -1,7 +1,13 @@
 using System;
 using System.Threading.Tasks;
 using AProjectManager.BitBucket;
+using AProjectManager.Cli.Converters;
+using AProjectManager.Cli.Models;
 using AProjectManager.Domain.BitBucket;
+using AProjectManager.Enums;
+using AProjectManager.Extensions;
+using AProjectManager.Interfaces;
+using AProjectManager.Models;
 using AProjectManager.Persistence.FileData;
 using Autofac;
 using Autofac.Core;
@@ -10,38 +16,80 @@ namespace AProjectManager.Cli
 {
     public class App
     {
-        public async Task Run(CliArguments arguments)
+        public async Task Login(LoginVerb arguments)
         {
-            var container = BuildDiContainer(arguments);
+            var container = BuildContainer(arguments.Service);
             
-            if (!string.IsNullOrEmpty(arguments.Login))
+            await using var scope = container.BeginLifetimeScope();
+            var loginManager = scope.Resolve<ILoginManager>();
+            
+            var user = GetUser(loginManager, arguments.UserName, arguments.Password);
+            
+            await loginManager.Login(user.ToAuthCredentials());
+        }
+
+        public async Task Clone(CloneVerb arguments)
+        {
+            var container = BuildContainer(arguments.Service);
+            
+            await using var scope = container.BeginLifetimeScope();
+            var loginManager = scope.Resolve<ILoginManager>();
+
+            var user = loginManager.GetUser();
+
+            if (user == null)
             {
-                await using var scope = container.BeginLifetimeScope();
-                var loginManager = scope.Resolve<ILoginManager>();
-                var user = GetUser(arguments);
-                await loginManager.Login(new AuthorizationCredentials {Key = user.Username, Secret = user.Password});
+                Console.WriteLine("Could not find user, please use login before cloning repositories");
+            }
+
+            var login = await loginManager.Login(user.ToAuthCredentials());
+
+            var cloneManager = scope.Resolve<ICloneManager>();
+
+            await cloneManager.Clone(new CloneRequest
+            {
+                CloneDirectory = arguments.CloneDirectory,
+                GetRepositoriesRequest = arguments.ToGetRepositoriesRequest(login.Token.AccessToken)
+            });
+        }
+
+        public async Task RepositoryGroup(GroupVerb group)
+        {
+            var container = BuildContainer(Services.RepositoryGroupService);
+            
+            await using var scope = container.BeginLifetimeScope();
+            var repositoryGroupManager = scope.Resolve<IRepositoryGroupManager>();
+
+            switch (group.Action)
+            {
+                case RepositoryGroupAction.Add:
+                    var groupResult = await repositoryGroupManager.Add(group.ToAdd());
+                    break;
             }
         }
 
-        private User GetUser(CliArguments arguments)
+        private User GetUser(ILoginManager loginManager, string userName, string password)
         {
-            var username = arguments.UserName ?? ReadLine.Read("Username: ");
-            var password = arguments.Password ?? ReadLine.ReadPassword("Password: ");
-            
-            return new User
-            {
-                Username = username,
-                Password = password
-            };
-        }
+            var existingUser = loginManager.GetUser();
 
-        private IContainer BuildDiContainer(CliArguments cliArguments)
+            if (existingUser != null)
+            {
+                return existingUser;
+            }
+            
+            var uname = userName ?? ReadLine.Read("Username: ");
+            var pword = password ?? ReadLine.ReadPassword("Password: ");
+            
+            return loginManager.RegisterUser(
+                uname,
+                pword);
+        }
+        
+        private static IContainer BuildContainer(string service)
         {
             var containerBuilder = new ContainerBuilder();
-            
             RegisterConfigManager(containerBuilder);
-            RegisterLoginManager(cliArguments, containerBuilder);
-
+            RegisterLoginManager(service, containerBuilder);
             return containerBuilder.Build();
         }
 
@@ -51,15 +99,17 @@ namespace AProjectManager.Cli
             containerBuilder.RegisterType<FileManager>().As<IFileManager>();
             containerBuilder.RegisterType<YamlConfigManager>().As<IConfigManager>();
             containerBuilder.RegisterType<FileConfigManager>().As<IFileConfigManager>();
+            containerBuilder.RegisterType<RepositoryGroupManager>().As<IRepositoryGroupManager>();
         }
         
-        private static void RegisterLoginManager(CliArguments cliArguments, ContainerBuilder containerBuilder)
+        private static void RegisterLoginManager(string service, ContainerBuilder containerBuilder)
         {
-            switch (cliArguments.Login.ToLowerInvariant())
+            switch (service.ToLowerInvariant())
             {
-                case LoginOptions.BitBucket:
+                case Services.BitBucket:
                     containerBuilder.RegisterType<BitBucketClient>().As<IBitBucketClient>();
                     containerBuilder.RegisterType<BitBucketLoginManager>().As<ILoginManager>();
+                    containerBuilder.RegisterType<BitBucketCloneManager>().As<ICloneManager>();
                     break;
                 default:
                     break;

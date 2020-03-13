@@ -1,12 +1,10 @@
 using CommandLine;
 
-namespace AProjectManager.Cli
+namespace AProjectManager.Cli.Models
 {
-    public class CliArguments
+    [Verb("login", HelpText = "Login to a remote service like BitBucket")]
+    public class LoginVerb : HelperOptions
     {
-        [Option('l', "login", HelpText = "Login to Online Account e.g. --login bitbucket")]
-        public string Login { get; set; }
-
         [Option('u', "username", HelpText = "User name for online account e.g. bitbucket OAuth Key")]
         public string UserName { get; set; }
         

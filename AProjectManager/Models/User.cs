@@ -1,4 +1,4 @@
-namespace AProjectManager.Cli
+namespace AProjectManager.Models
 {
     public class User
     {
