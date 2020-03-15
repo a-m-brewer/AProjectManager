@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using AProjectManager.Git.Models;
 using Avoid.Cli;
@@ -57,7 +60,22 @@ namespace AProjectManager.Git
             return process;
         }
 
-        private static IProcess ChangeDirGitProcess(IRepository localRepository, string gitAction)
+        public static IProcess Branch(LocalRepository localRepository, IEnumerable<Action<object, DataReceivedEventArgs>> dataReceivedCallback)
+        {
+            var process = ChangeDirGitProcess(localRepository, "branch", b =>
+            {
+                b.AddFlag("-a");
+
+                foreach (var action in dataReceivedCallback)
+                {
+                    b.AddDataReceivedCallback(action);
+                }
+            });
+
+            return process;
+        }
+
+        private static IProcess ChangeDirGitProcess(IRepository localRepository, string gitAction, params Action<IBuilderActions>[] extraActions)
         {
             var originalDirectory = Directory.GetCurrentDirectory();
             var programBuilder = new CliProgramBuilder();
@@ -66,6 +84,12 @@ namespace AProjectManager.Git
             {
                 b.AddProgram("git");
                 b.AddArgument(gitAction);
+
+                foreach (var action in extraActions)
+                {
+                    action.Invoke(b);
+                }
+                
                 b.AddPreprocessAction(action => Directory.SetCurrentDirectory(localRepository.Location));
                 b.AddPostprocessAction(action => Directory.SetCurrentDirectory(originalDirectory));
             });

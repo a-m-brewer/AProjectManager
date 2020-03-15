@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -48,7 +49,7 @@ namespace AProjectManager.Managers
                 return repositorySession;
             }
             
-            CheckoutRepositories(repositorySession.RepositorySlugs, repositorySession.BranchName, create: true);
+            CheckoutRepositories(repositorySession.RepositorySlugs, repositorySession.BranchName);
 
             return repositorySession;
         }
@@ -74,7 +75,7 @@ namespace AProjectManager.Managers
                 session.RepositorySlugs.AddRange(extraSlugs);
             }
 
-            CheckoutRepositories(session.RepositorySlugs, branchName, create: false);
+            CheckoutRepositories(session.RepositorySlugs, branchName);
 
             return _fileRepository.WriteSession(session);
         }
@@ -132,7 +133,7 @@ namespace AProjectManager.Managers
             return true;
         }
 
-        private void CheckoutRepositories(IEnumerable<string> repositorySlugs, string branchName, bool create)
+        private void CheckoutRepositories(IEnumerable<string> repositorySlugs, string branchName)
         {
             var repos = _repositoryRegisterManager
                 .GetAvailableRepositories(repositorySlugs)
@@ -141,6 +142,8 @@ namespace AProjectManager.Managers
             
             Console.WriteLine("Checking out available repositories");
 
+            GitDataRetriever.GetBranches(repos.First());
+            
             foreach (var runnable in repos.Select(repo => new
             {
                 Repo = repo,
@@ -149,7 +152,7 @@ namespace AProjectManager.Managers
                     RepositoryManager.Checkout(repo, new Checkout
                     {
                         Branch = new Branch {Name = branchName},
-                        Create = create
+                        Create = !repo.BranchExists(branchName)
                     })
                 }
             }).Select(repo => new

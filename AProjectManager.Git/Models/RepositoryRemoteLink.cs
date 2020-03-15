@@ -4,6 +4,6 @@ namespace AProjectManager.Git.Models
     {
         public string Slug { get; set; }
         public LocalRepository Local { get; set; }
-        public Repository Origin { get; set; }
+        public RemoteRepository Origin { get; set; }
     }
 }

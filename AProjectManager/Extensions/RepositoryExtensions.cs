@@ -18,7 +18,7 @@ namespace AProjectManager.Extensions
                     Location = string.IsNullOrEmpty(cloneDirectory) ? repo.Slug : Path.Combine(cloneDirectory, repo.Slug),
                     Name = repo.Name
                 },
-                Origin = new Repository
+                Origin = new RemoteRepository
                 {
                     Location = repo.Links.Clone.First(f => f.Name == "https").Href,
                     Name = $"origin/{repo.Slug}"
