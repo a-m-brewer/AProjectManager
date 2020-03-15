@@ -10,12 +10,10 @@ namespace AProjectManager.Managers
 {
     public class RepositoryRegisterManager : IRepositoryRegisterManager
     {
-        private readonly IFileConfigManager _fileConfigManager;
         private readonly IFileRepository _fileRepository;
 
-        public RepositoryRegisterManager(IFileConfigManager fileConfigManager, IFileRepository fileRepository)
+        public RepositoryRegisterManager(IFileRepository fileRepository)
         {
-            _fileConfigManager = fileConfigManager;
             _fileRepository = fileRepository;
         }
         
@@ -29,13 +27,13 @@ namespace AProjectManager.Managers
             }
             
             repositoryRegister.FileNames.Add(repositoriesFileName);
-            return _fileConfigManager.WriteData(repositoryRegister, ConfigFiles.RepositoryFiles);
+            return _fileRepository.WriteRepositoryRegister(repositoryRegister);
 
         }
 
         public RepositoryRegister GetRegister()
         {
-            return _fileConfigManager.GetFromFile<RepositoryRegister>(ConfigFiles.RepositoryFiles) ?? new RepositoryRegister();
+            return _fileRepository.GetRepositoryRegister() ?? new RepositoryRegister();
         }
 
         public Dictionary<string, bool> RepositoryExistInRegister(IEnumerable<string> repositorySlugs)
@@ -52,10 +50,7 @@ namespace AProjectManager.Managers
         public List<RepositoryRemoteLink> GetAvailableRepositories()
         {
             var repositoryFiles = GetRegister();
-            
-            return repositoryFiles.FileNames.SelectMany(fileName =>
-                    _fileConfigManager.GetFromFile<List<RepositoryRemoteLink>>(fileName, ConfigPaths.Repositories))
-                .ToList();
+            return repositoryFiles.FileNames.SelectMany(fileName => _fileRepository.GetServiceRepositories(fileName).Repositories).ToList();
         }
 
         public List<RepositoryRemoteLink> GetAvailableRepositories(IEnumerable<string> slugs)

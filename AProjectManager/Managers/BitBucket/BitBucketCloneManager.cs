@@ -16,13 +16,16 @@ namespace AProjectManager.Managers.BitBucket
     {
         private readonly IBitBucketClient _bitBucketClient;
         private readonly IFileRepository _fileRepository;
+        private readonly IRepositoryRegisterManager _repositoryRegisterManager;
 
         public BitBucketCloneManager(
             IBitBucketClient bitBucketClient,
-            IFileRepository fileRepository)
+            IFileRepository fileRepository,
+            IRepositoryRegisterManager repositoryRegisterManager)
         {
             _bitBucketClient = bitBucketClient;
             _fileRepository = fileRepository;
+            _repositoryRegisterManager = repositoryRegisterManager;
         }
 
         public async Task<ServiceRepositories> Clone(CloneRequest cloneRequest, CancellationToken cancellationToken = default)
@@ -59,6 +62,7 @@ namespace AProjectManager.Managers.BitBucket
 
             existingRepository.Repositories.AddRange(repositoriesToAdd);
 
+            _repositoryRegisterManager.UpdateRegister(existingRepository.GetFileName());
             return _fileRepository.WriteServiceRepositories(existingRepository);
         }
     }

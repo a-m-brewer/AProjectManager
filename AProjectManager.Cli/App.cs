@@ -11,6 +11,7 @@ using AProjectManager.Managers;
 using AProjectManager.Managers.BitBucket;
 using AProjectManager.Models;
 using AProjectManager.Persistence.FileData;
+using AProjectManager.Utils;
 using Autofac;
 using CommandLine.Text;
 
@@ -149,6 +150,7 @@ namespace AProjectManager.Cli
             containerBuilder.RegisterType<FileManager>().As<IFileManager>();
             containerBuilder.RegisterType<YamlConfigManager>().As<IConfigManager>();
             containerBuilder.RegisterType<FileConfigManager>().As<IFileConfigManager>();
+            containerBuilder.RegisterType<FileRepository>().As<IFileRepository>();
         }
         
         private static void RegisterLoginManager(string service, ContainerBuilder containerBuilder)

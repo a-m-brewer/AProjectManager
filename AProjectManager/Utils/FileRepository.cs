@@ -1,4 +1,5 @@
 using AProjectManager.Constants;
+using AProjectManager.Extensions;
 using AProjectManager.Interfaces;
 using AProjectManager.Models;
 using AProjectManager.Persistence.FileData;
@@ -8,14 +9,11 @@ namespace AProjectManager.Utils
     public class FileRepository : IFileRepository
     {
         private readonly IFileConfigManager _fileConfigManager;
-        private readonly IRepositoryRegisterManager _repositoryRegisterManager;
 
         public FileRepository(
-            IFileConfigManager fileConfigManager,
-            IRepositoryRegisterManager repositoryRegisterManager)
+            IFileConfigManager fileConfigManager)
         {
             _fileConfigManager = fileConfigManager;
-            _repositoryRegisterManager = repositoryRegisterManager;
         }
         
         public RepositoryGroup GetGroup(string groupName)
@@ -30,13 +28,22 @@ namespace AProjectManager.Utils
 
         public ServiceRepositories GetServiceRepositories(string serviceName, string userName)
         {
-            return _fileConfigManager.GetFromFile<ServiceRepositories>(ConfigFiles.RepoConfigName(serviceName, userName),
-                ConfigPaths.Repositories);
+            return GetServiceRepositories(ConfigFiles.RepoConfigName(serviceName, userName));
+        }
+        
+        public ServiceRepositories GetServiceRepositories(string fileName)
+        {
+            return _fileConfigManager.GetFromFile<ServiceRepositories>(fileName, ConfigPaths.Repositories);
+        }
+
+        public RepositoryRegister GetRepositoryRegister()
+        {
+            return _fileConfigManager.GetFromFile<RepositoryRegister>(ConfigFiles.RepositoryRegister);
         }
         
         public RepositoryGroup WriteGroup(RepositoryGroup repositoryGroup)
         {
-            return _fileConfigManager.GetFromFile<RepositoryGroup>(repositoryGroup.GroupName, ConfigPaths.RepositoryGroups);
+            return _fileConfigManager.WriteData(repositoryGroup, repositoryGroup.GroupName, ConfigPaths.RepositoryGroups);
         }
 
         public RepositorySession WriteSession(RepositorySession repositorySession)
@@ -46,10 +53,13 @@ namespace AProjectManager.Utils
 
         public ServiceRepositories WriteServiceRepositories(ServiceRepositories serviceRepositories)
         {
-            var fileName = ConfigFiles.RepoConfigName(serviceRepositories.Service, serviceRepositories.Name);
-            var file =  _fileConfigManager.WriteData(serviceRepositories, fileName, ConfigPaths.Repositories);
-            _repositoryRegisterManager.UpdateRegister(fileName);
+            var file =  _fileConfigManager.WriteData(serviceRepositories, serviceRepositories.GetFileName(), ConfigPaths.Repositories);
             return file;
+        }
+
+        public RepositoryRegister WriteRepositoryRegister(RepositoryRegister repositoryRegister)
+        {
+            return _fileConfigManager.WriteData(repositoryRegister, ConfigFiles.RepositoryRegister);
         }
     }
 }
