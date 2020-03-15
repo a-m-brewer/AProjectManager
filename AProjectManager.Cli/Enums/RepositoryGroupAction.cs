@@ -1,4 +1,4 @@
-namespace AProjectManager.Enums
+namespace AProjectManager.Cli.Enums
 {
     public enum RepositoryGroupAction
     {

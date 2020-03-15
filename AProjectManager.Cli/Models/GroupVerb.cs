@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using AProjectManager.Cli.Enums;
 using AProjectManager.Enums;
 using CommandLine;
 

@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using AProjectManager.BitBucket;
 using AProjectManager.Cli.Converters;
+using AProjectManager.Cli.Enums;
 using AProjectManager.Cli.Models;
 using AProjectManager.Constants;
 using AProjectManager.Enums;
@@ -97,12 +98,23 @@ namespace AProjectManager.Cli
             await using var scope = container.BeginLifetimeScope();
             var sessionManager = scope.Resolve<IRepositorySessionManager>();
 
+            RepositorySession repositorySession;
             switch (verb.Action)
             {
                 case RepositorySessionAction.Start:
                     Console.WriteLine($"Starting session: {verb.BranchName}");
-                    var session = await sessionManager.Start(verb.ToSessionStartRequest());
+                    repositorySession = await sessionManager.Start(verb.ToSessionStartRequest());
                     Console.WriteLine($"Started session: {verb.BranchName}");
+                    break;
+                case RepositorySessionAction.Checkout:
+                    Console.WriteLine($"Checking out existing session: {verb.BranchName}"); 
+                    repositorySession = await sessionManager.Checkout(verb.ToSessionCheckoutRequest());
+                    Console.WriteLine($"Checked out existing session: {verb.BranchName}");
+                    break;
+                case RepositorySessionAction.Exit:
+                    Console.WriteLine($"Exiting out of session: {verb.BranchName}"); 
+                    repositorySession = await sessionManager.Exit(verb.ToSessionExitRequest());
+                    Console.WriteLine($"Exited out of session: {verb.BranchName}");
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

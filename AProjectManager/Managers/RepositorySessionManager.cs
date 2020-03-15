@@ -10,6 +10,7 @@ using AProjectManager.Interfaces;
 using AProjectManager.Models;
 using AProjectManager.Utils;
 using Avoid.Cli;
+using Repository = AProjectManager.Models.Repository;
 
 namespace AProjectManager.Managers
 {
@@ -47,9 +48,35 @@ namespace AProjectManager.Managers
                 return repositorySession;
             }
             
-            CheckoutRepositories(repositorySession.RepositorySlugs, repositorySession.BranchName);
+            CheckoutRepositories(repositorySession.RepositorySlugs, repositorySession.BranchName, create: true);
 
             return repositorySession;
+        }
+
+        public async Task<RepositorySession> Exit(SessionExitRequest sessionExitRequest, CancellationToken cancellationToken = default)
+        {
+            return await GetSessionAndCheckout(sessionExitRequest.BranchName, "master", cancellationToken);
+        }
+
+        public async Task<RepositorySession> Checkout(SessionCheckoutRequest sessionCheckoutRequest, CancellationToken cancellationToken = default)
+        {
+            return await GetSessionAndCheckout(sessionCheckoutRequest.BranchName, sessionCheckoutRequest.BranchName, cancellationToken);
+        }
+
+        private async Task<RepositorySession> GetSessionAndCheckout(string sessionName, string branchName, CancellationToken cancellationToken = default)
+        {
+            var session = GetSession(sessionName);
+
+            if (!string.IsNullOrEmpty(session.RepositoryGroupName))
+            {
+                var group = _fileRepository.GetGroup(session.RepositoryGroupName);
+                var extraSlugs = group.RepositorySlugs.Where(slug => !session.RepositorySlugs.Contains(slug));
+                session.RepositorySlugs.AddRange(extraSlugs);
+            }
+
+            CheckoutRepositories(session.RepositorySlugs, branchName, create: false);
+
+            return _fileRepository.WriteSession(session);
         }
 
         private RepositorySession GetSession(string branchName)
@@ -105,7 +132,7 @@ namespace AProjectManager.Managers
             return true;
         }
 
-        private void CheckoutRepositories(IEnumerable<string> repositorySlugs, string branchName)
+        private void CheckoutRepositories(IEnumerable<string> repositorySlugs, string branchName, bool create)
         {
             var repos = _repositoryRegisterManager
                 .GetAvailableRepositories(repositorySlugs)
@@ -119,12 +146,10 @@ namespace AProjectManager.Managers
                 Repo = repo,
                 Processes = new List<IProcess>
                 {
-                    RepositoryManager.Fetch(repo),
-                    RepositoryManager.Pull(repo),
                     RepositoryManager.Checkout(repo, new Checkout
                     {
                         Branch = new Branch {Name = branchName},
-                        Create = true
+                        Create = create
                     })
                 }
             }).Select(repo => new
