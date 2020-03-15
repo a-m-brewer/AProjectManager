@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,7 +10,6 @@ using AProjectManager.Interfaces;
 using AProjectManager.Models;
 using AProjectManager.Utils;
 using Avoid.Cli;
-using Repository = AProjectManager.Models.Repository;
 
 namespace AProjectManager.Managers
 {

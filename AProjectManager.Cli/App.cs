@@ -5,7 +5,6 @@ using AProjectManager.Cli.Converters;
 using AProjectManager.Cli.Enums;
 using AProjectManager.Cli.Models;
 using AProjectManager.Constants;
-using AProjectManager.Enums;
 using AProjectManager.Extensions;
 using AProjectManager.Interfaces;
 using AProjectManager.Managers;
@@ -119,6 +118,12 @@ namespace AProjectManager.Cli
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+        }
+
+        public async Task DockerCompose(DockerComposeVerb verb)
+        {
+            Console.WriteLine(HeadingInfo.Default);
+            // TODO: Carry on with docker stuff
         }
 
         private User GetUser(ILoginManager loginManager, string userName, string password)

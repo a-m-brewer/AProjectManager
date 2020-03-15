@@ -59,5 +59,14 @@ namespace AProjectManager.Managers
                 join slug in slugs on repository.Slug equals slug
                 select repository).ToList();
         }
+
+        public List<RepositoryRemoteLink> GetAvailableRepositories(string name)
+        {
+            var repositories = _fileRepository.GetSession(name)?.RepositorySlugs 
+                               ?? _fileRepository.GetGroup(name)?.RepositorySlugs 
+                               ?? new List<string> {name};
+
+            return GetAvailableRepositories(repositories);
+        }
     }
 }
