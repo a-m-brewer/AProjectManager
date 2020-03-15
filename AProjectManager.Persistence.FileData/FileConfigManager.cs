@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace AProjectManager.Persistence.FileData
@@ -22,20 +23,41 @@ namespace AProjectManager.Persistence.FileData
         }
 
 
-        public T WriteData<T>(T obj, string fileName)
+        public T WriteData<T>(T obj, string fileName, params string[] subDirs)
         {
             fileName = fileName.EndsWith(".yml") ? fileName : $"{fileName}.yml";
-            var filePath = _folderProvider.GetPathOfFile(_configFolderPath, fileName);
+
+            var path = new List<string>
+            {
+                _configFolderPath
+            };
+            
+            path.AddRange(subDirs);
+
+            var folderPath = Path.Combine(path.ToArray());
+            
+            var filePath = _folderProvider.GetPathOfFile(folderPath, fileName);
+            
             var objString = _configManager.Serialize(obj);
             _fileManager.WriteData(filePath, objString);
 
             return obj;
         }
 
-        public T GetFromFile<T>(string fileName)
+        public T GetFromFile<T>(string fileName, params string[] subDirs)
         {
             fileName = fileName.EndsWith(".yml") ? fileName : $"{fileName}.yml";
-            var filePath = _folderProvider.GetPathOfFile(_configFolderPath, fileName);
+            
+            var path = new List<string>
+            {
+                _configFolderPath
+            };
+            
+            path.AddRange(subDirs);
+
+            var folderPath = Path.Combine(path.ToArray());
+            
+            var filePath = _folderProvider.GetPathOfFile(folderPath, fileName);
             var stringData = _fileManager.GetData(filePath);
             return _configManager.Deserialize<T>(stringData);
         }

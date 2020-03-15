@@ -4,6 +4,7 @@ namespace AProjectManager.Constants
     {
         public const string Token = nameof(Token);
         public const string User = nameof(User);
+        public const string RepositoryFiles = nameof(RepositoryFiles);
 
         public static string RepoConfigName(string service, string name)
         {

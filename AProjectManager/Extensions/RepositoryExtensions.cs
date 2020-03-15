@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using AProjectManager.Domain.BitBucket;
 using AProjectManager.Domain.Git;
-using Repository = AProjectManager.Models.Repository;
 
 namespace AProjectManager.Extensions
 {
@@ -13,7 +12,8 @@ namespace AProjectManager.Extensions
         {
             return new RepositoryRemoteLink
             {
-                Local = new Domain.Git.Repository
+                Slug = repo.Slug,
+                Local = new LocalRepository
                 {
                     Location = string.IsNullOrEmpty(cloneDirectory) ? repo.Slug : Path.Combine(cloneDirectory, repo.Slug),
                     Name = repo.Name

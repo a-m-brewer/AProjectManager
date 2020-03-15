@@ -14,10 +14,11 @@ namespace AProjectManager.Cli
             
             var app = new App();
 
-            Parser.Default.ParseArguments<LoginVerb, CloneVerb, GroupVerb>(args)
+            Parser.Default.ParseArguments<LoginVerb, CloneVerb, GroupVerb, SessionVerb>(args)
                 .WithParsed<LoginVerb>(verb => tasks.Add(app.Login(verb)))
                 .WithParsed<CloneVerb>(verb => tasks.Add(app.Clone(verb)))
                 .WithParsed<GroupVerb>(verb => tasks.Add(app.RepositoryGroup(verb)))
+                .WithParsed<SessionVerb>(verb => tasks.Add(app.RepositorySession(verb)))
                 .WithNotParsed(errors =>
                 {
                     foreach (var error in errors)

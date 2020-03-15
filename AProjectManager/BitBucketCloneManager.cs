@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using AProjectManager.BitBucket;
 using AProjectManager.Constants;
-using AProjectManager.Domain.BitBucket;
 using AProjectManager.Extensions;
 using AProjectManager.Git;
 using AProjectManager.Interfaces;
@@ -17,13 +16,16 @@ namespace AProjectManager
     {
         private readonly IBitBucketClient _bitBucketClient;
         private readonly IFileConfigManager _fileConfigManager;
+        private readonly IRepositoryRegisterManager _repositoryRegisterManager;
 
         public BitBucketCloneManager(
             IBitBucketClient bitBucketClient,
-            IFileConfigManager fileConfigManager)
+            IFileConfigManager fileConfigManager,
+            IRepositoryRegisterManager repositoryRegisterManager)
         {
             _bitBucketClient = bitBucketClient;
             _fileConfigManager = fileConfigManager;
+            _repositoryRegisterManager = repositoryRegisterManager;
         }
 
         public async Task Clone(CloneRequest cloneRequest, CancellationToken cancellationToken = default)
@@ -40,8 +42,12 @@ namespace AProjectManager
                 cloneProcess.Start();
             }
 
-            _fileConfigManager.WriteData(repositoriesDto,
-                ConfigFiles.RepoConfigName("bitbucket", cloneRequest.GetRepositoriesRequest.User));
+            var repositoryName =
+                ConfigFiles.RepoConfigName(Services.BitBucket, cloneRequest.GetRepositoriesRequest.User);
+            
+            _fileConfigManager.WriteData(repositoriesDto, repositoryName, ConfigPaths.Repositories);
+
+            _repositoryRegisterManager.UpdateRegister(repositoryName);
         }
     }
 }

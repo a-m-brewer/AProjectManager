@@ -11,7 +11,7 @@ namespace AProjectManager.Cli.Converters
             return new GroupAddRequest
             {
                 GroupName = verb.GroupName,
-                ProjectLocations = verb.Projects.ToList()
+                ProjectSlugs = verb.ProjectSlugs.ToList()
             };
         }
     }
