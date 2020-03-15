@@ -3,13 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using AProjectManager.Constants;
 using AProjectManager.Extensions;
 using AProjectManager.Git;
 using AProjectManager.Git.Models;
 using AProjectManager.Interfaces;
 using AProjectManager.Models;
-using AProjectManager.Persistence.FileData;
 using AProjectManager.Utils;
 using Avoid.Cli;
 
@@ -17,74 +15,104 @@ namespace AProjectManager.Managers
 {
     public class RepositorySessionManager : IRepositorySessionManager
     {
-        private readonly IFileConfigManager _fileConfigManager;
+        private readonly IFileRepository _fileRepository;
         private readonly IRepositoryRegisterManager _repositoryRegisterManager;
 
         public RepositorySessionManager(
-            IFileConfigManager fileConfigManager,
+            IFileRepository fileRepository,
             IRepositoryRegisterManager repositoryRegisterManager)
         {
-            _fileConfigManager = fileConfigManager;
+            _fileRepository = fileRepository;
             _repositoryRegisterManager = repositoryRegisterManager;
         }
         
         public async Task<RepositorySession> Start(SessionStartRequest sessionStartRequest, CancellationToken cancellationToken = default)
         {
-            var repositorySession = new RepositorySession { Name = sessionStartRequest.BranchName, BranchName = sessionStartRequest.BranchName, RepositorySlugs = new List<string>()};
-
-            if (sessionStartRequest.RepositoryGroupName != null)
+            var repositorySession = GetSession(sessionStartRequest.BranchName);
+            
+            if (sessionStartRequest.RepositoryGroupName != null && !TryImportRepositoryGroup(sessionStartRequest.RepositoryGroupName, repositorySession))
             {
-                Console.WriteLine($"Importing Group: {sessionStartRequest.RepositoryGroupName} into session");
-                
-                var repositoryGroup = _fileConfigManager.GetFromFile<RepositoryGroup>(sessionStartRequest.RepositoryGroupName, ConfigPaths.RepositoryGroups);
-
-                if (repositoryGroup == null)
-                {
-                    if (!ConsoleEvents.YesNoInput($"Could not find Repository Group: {sessionStartRequest.RepositoryGroupName}, Continue? "))
-                    {
-                        return repositorySession;
-                    }
-                }
-                else
-                {
-                    repositorySession.RepositoryGroupName = sessionStartRequest.RepositoryGroupName;
-                    repositorySession.RepositorySlugs.AddRange(repositoryGroup.RepositorySlugs);
-                }
-                
-                Console.WriteLine($"Imported Group: {sessionStartRequest.RepositoryGroupName} into session");
+                return repositorySession;
             }
 
-            if (sessionStartRequest.Slugs != null)
+            if (sessionStartRequest.Slugs != null && !TryAddSlugsIfNotExist(sessionStartRequest.Slugs.ToList(), repositorySession))
             {
-                var slugsAsString = string.Join(", ", sessionStartRequest.Slugs);
-                Console.WriteLine($"Importing Slugs: {slugsAsString}");
-                
-                var toAdd = sessionStartRequest.Slugs.Where(w => !repositorySession.RepositorySlugs.Contains(w));
-               
-                var (repositoriesThatExist, repositoriesThatDoNotExist) = _repositoryRegisterManager.RepositoryExistInRegister(toAdd).SplitExistingAndNonExisting();
-
-                if (repositoriesThatDoNotExist.Any() && !ConsoleEvents.YesNoInput($"Could not find slugs: {string.Join(", ", repositoriesThatDoNotExist)}. Continue? "))
-                {
-                    return repositorySession;
-                }
-                
-                repositorySession.RepositorySlugs.AddRange(repositoriesThatExist);
-                Console.WriteLine($"Importing Slugs: {slugsAsString}");
+                return repositorySession;
             }
 
-            _fileConfigManager.WriteData(repositorySession, repositorySession.Name, ConfigPaths.RepositorySessions);
+            _fileRepository.WriteSession(repositorySession);
 
             if (!sessionStartRequest.Checkout)
             {
                 return repositorySession;
             }
             
+            CheckoutRepositories(repositorySession.RepositorySlugs, repositorySession.BranchName);
+
+            return repositorySession;
+        }
+
+        private RepositorySession GetSession(string branchName)
+        {
+            return _fileRepository.GetSession(branchName) ?? new RepositorySession
+            {
+                Name = branchName, 
+                BranchName = branchName
+            };
+        }
+
+        private bool TryImportRepositoryGroup(string repositoryGroupName, RepositorySession repositorySession)
+        {
+            Console.WriteLine($"Importing Group: {repositoryGroupName} into session");
+
+            var repositoryGroup = _fileRepository.GetGroup(repositoryGroupName);
+
+            if (repositoryGroup == null)
+            {
+                return !ConsoleEvents.YesNoInput($"Could not find Repository Group: {repositoryGroupName}, Continue? ");
+            }
+
+            repositorySession.RepositoryGroupName = repositoryGroupName;
+
+            var slugsToAdd =
+                repositoryGroup.RepositorySlugs.Where(slug =>
+                    !repositorySession.RepositorySlugs.Contains(slug));
+                    
+            repositorySession.RepositorySlugs.AddRange(slugsToAdd);
+
+            Console.WriteLine($"Imported Group: {repositoryGroupName} into session");
+
+            return true;
+        }
+
+        private bool TryAddSlugsIfNotExist(IReadOnlyCollection<string> slugs, RepositorySession repositorySession)
+        {
+            var slugsAsString = string.Join(", ", slugs);
+            Console.WriteLine($"Importing Slugs: {slugsAsString}");
+                
+            var toAdd = slugs.Where(w => !repositorySession.RepositorySlugs.Contains(w));
+               
+            var (repositoriesThatExist, repositoriesThatDoNotExist) = _repositoryRegisterManager.RepositoryExistInRegister(toAdd).SplitExistingAndNonExisting();
+
+            if (repositoriesThatDoNotExist.Any() && !ConsoleEvents.YesNoInput($"Could not find slugs: {string.Join(", ", repositoriesThatDoNotExist)}. Continue? "))
+            {
+                return false;
+            }
+                
+            repositorySession.RepositorySlugs.AddRange(repositoriesThatExist);
+            Console.WriteLine($"Importing Slugs: {slugsAsString}");
+
+            return true;
+        }
+
+        private void CheckoutRepositories(IEnumerable<string> repositorySlugs, string branchName)
+        {
             var repos = _repositoryRegisterManager
-                .GetAvailableRepositories(repositorySession.RepositorySlugs)
+                .GetAvailableRepositories(repositorySlugs)
                 .Select(s => s.Local)
                 .ToList();
             
-            Console.WriteLine($"Checking out available repositories");
+            Console.WriteLine("Checking out available repositories");
 
             foreach (var runnable in repos.Select(repo => new
             {
@@ -95,7 +123,7 @@ namespace AProjectManager.Managers
                     RepositoryManager.Pull(repo),
                     RepositoryManager.Checkout(repo, new Checkout
                     {
-                        Branch = new Branch {Name = sessionStartRequest.BranchName},
+                        Branch = new Branch {Name = branchName},
                         Create = true
                     })
                 }
@@ -111,8 +139,6 @@ namespace AProjectManager.Managers
             }
             
             Console.WriteLine($"Checked out available repositories");
-
-            return repositorySession;
         }
     }
 }

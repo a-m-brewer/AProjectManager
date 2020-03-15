@@ -6,7 +6,7 @@ using AProjectManager.Interfaces;
 using AProjectManager.Models;
 using AProjectManager.Persistence.FileData;
 
-namespace AProjectManager.Managers
+namespace AProjectManager.Managers.BitBucket
 {
     public class BitBucketLoginManager : ILoginManager
     {

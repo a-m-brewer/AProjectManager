@@ -12,39 +12,36 @@ namespace AProjectManager.Managers
 {
     public class RepositoryGroupManager : IRepositoryGroupManager
     {
-        private readonly IFileConfigManager _fileConfigManager;
+        private readonly IFileRepository _fileRepository;
         private readonly IRepositoryRegisterManager _repositoryRegisterManager;
 
         public RepositoryGroupManager(
-            IFileConfigManager fileConfigManager,
+            IFileRepository fileRepository,
             IRepositoryRegisterManager repositoryRegisterManager)
         {
-            _fileConfigManager = fileConfigManager;
+            _fileRepository = fileRepository;
             _repositoryRegisterManager = repositoryRegisterManager;
         }
         
         public async Task<RepositoryGroup> Add(GroupAddRequest groupAddRequest)
         {
-            var existingGroup = _fileConfigManager.GetFromFile<RepositoryGroup>(groupAddRequest.GroupName, ConfigPaths.RepositoryGroups);
+            var existingGroup = _fileRepository.GetGroup(groupAddRequest.GroupName) ?? new RepositoryGroup
+            {
+                GroupName = groupAddRequest.GroupName
+            };
 
-            var updatedItem = existingGroup ?? new RepositoryGroup();
-
-            updatedItem.GroupName = groupAddRequest.GroupName;
-            
-            updatedItem.RepositorySlugs ??= new List<string>();
-            
-            var toAdd = groupAddRequest.RepositorySlugs.Where(w => !updatedItem.RepositorySlugs.Contains(w));
+            var toAdd = groupAddRequest.RepositorySlugs.Where(w => !existingGroup.RepositorySlugs.Contains(w));
 
             var (repositoriesThatExist, repositoriesThatDoNotExist) = _repositoryRegisterManager.RepositoryExistInRegister(toAdd).SplitExistingAndNonExisting();
 
             if (repositoriesThatDoNotExist.Any() && !ConsoleEvents.YesNoInput($"Could not find slugs: {string.Join(", ", repositoriesThatDoNotExist)}. Continue? "))
             {
-                return updatedItem;
+                return existingGroup;
             }
             
-            updatedItem.RepositorySlugs.AddRange(repositoriesThatExist);
-            
-            return _fileConfigManager.WriteData(updatedItem, groupAddRequest.GroupName, ConfigPaths.RepositoryGroups);
+            existingGroup.RepositorySlugs.AddRange(repositoriesThatExist);
+
+            return _fileRepository.WriteGroup(existingGroup);
         }
     }
 }

@@ -11,17 +11,26 @@ namespace AProjectManager.Managers
     public class RepositoryRegisterManager : IRepositoryRegisterManager
     {
         private readonly IFileConfigManager _fileConfigManager;
+        private readonly IFileRepository _fileRepository;
 
-        public RepositoryRegisterManager(IFileConfigManager fileConfigManager)
+        public RepositoryRegisterManager(IFileConfigManager fileConfigManager, IFileRepository fileRepository)
         {
             _fileConfigManager = fileConfigManager;
+            _fileRepository = fileRepository;
         }
         
         public RepositoryRegister UpdateRegister(string repositoriesFileName)
         {
             var repositoryRegister = GetRegister();
+
+            if (repositoryRegister.FileNames.Contains(repositoriesFileName))
+            {
+                return repositoryRegister;
+            }
+            
             repositoryRegister.FileNames.Add(repositoriesFileName);
             return _fileConfigManager.WriteData(repositoryRegister, ConfigFiles.RepositoryFiles);
+
         }
 
         public RepositoryRegister GetRegister()
