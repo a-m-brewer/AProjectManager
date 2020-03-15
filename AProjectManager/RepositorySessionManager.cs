@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -33,6 +34,8 @@ namespace AProjectManager
 
             if (sessionStartRequest.RepositoryGroupName != null)
             {
+                Console.WriteLine($"Importing Group: {sessionStartRequest.RepositoryGroupName} into session");
+                
                 var repositoryGroup = _fileConfigManager.GetFromFile<RepositoryGroup>(sessionStartRequest.RepositoryGroupName, ConfigPaths.RepositoryGroups);
 
                 if (repositoryGroup == null)
@@ -47,10 +50,15 @@ namespace AProjectManager
                     repositorySession.RepositoryGroupName = sessionStartRequest.RepositoryGroupName;
                     repositorySession.RepositorySlugs.AddRange(repositoryGroup.RepositorySlugs);
                 }
+                
+                Console.WriteLine($"Imported Group: {sessionStartRequest.RepositoryGroupName} into session");
             }
 
             if (sessionStartRequest.Slugs != null)
             {
+                var slugsAsString = string.Join(", ", sessionStartRequest.Slugs);
+                Console.WriteLine($"Importing Slugs: {slugsAsString}");
+                
                 var toAdd = sessionStartRequest.Slugs.Where(w => !repositorySession.RepositorySlugs.Contains(w));
                
                 var (repositoriesThatExist, repositoriesThatDoNotExist) = _repositoryRegisterManager.RepositoryExistInRegister(toAdd).SplitExistingAndNonExisting();
@@ -61,6 +69,7 @@ namespace AProjectManager
                 }
                 
                 repositorySession.RepositorySlugs.AddRange(repositoriesThatExist);
+                Console.WriteLine($"Importing Slugs: {slugsAsString}");
             }
 
             _fileConfigManager.WriteData(repositorySession, repositorySession.Name, ConfigPaths.RepositorySessions);
@@ -74,20 +83,34 @@ namespace AProjectManager
                 .GetAvailableRepositories(repositorySession.RepositorySlugs)
                 .Select(s => s.Local)
                 .ToList();
+            
+            Console.WriteLine($"Checking out available repositories");
 
-            foreach (var runnable in repos.Select(repo => new List<IProcess>
+            foreach (var runnable in repos.Select(repo => new
             {
-                RepositoryManager.Fetch(repo),
-                RepositoryManager.Pull(repo),
-                RepositoryManager.Checkout(repo, new Checkout
+                Repo = repo,
+                Processes = new List<IProcess>
                 {
-                    Branch = new Branch { Name = sessionStartRequest.BranchName },
-                    Create = true
-                })
-            }).Select(processes => processes.ToRunnableProcess()))
+                    RepositoryManager.Fetch(repo),
+                    RepositoryManager.Pull(repo),
+                    RepositoryManager.Checkout(repo, new Checkout
+                    {
+                        Branch = new Branch {Name = sessionStartRequest.BranchName},
+                        Create = true
+                    })
+                }
+            }).Select(repo => new
             {
-                runnable.Start();
+                repo.Repo,
+                RunnableProcess = repo.Processes.ToRunnableProcess()
+            }))
+            {
+                Console.WriteLine($"Checking out: {runnable.Repo.Name}");
+                runnable.RunnableProcess.Start();
+                Console.WriteLine($"Checked out: {runnable.Repo.Name}");
             }
+            
+            Console.WriteLine($"Checked out available repositories");
 
             return repositorySession;
         }

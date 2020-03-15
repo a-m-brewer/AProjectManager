@@ -10,8 +10,8 @@ namespace AProjectManager.Cli.Models
         [Option('g', "group-name", HelpText = "The Name of the Set of Repositories")]
         public string GroupName { get; set; }
         
-        [Option('p', "projects", HelpText = "List of repository slugs to be part of group", Separator = ':')]
-        public IEnumerable<string> ProjectSlugs { get; set; }
+        [Option('s', "slugs", HelpText = "List of repository slugs to be part of group", Separator = ':')]
+        public IEnumerable<string> RepositorySlugs { get; set; }
         
         [Option('a', "action", HelpText = "Action to perform on repository group e.g. add")]
         public RepositoryGroupAction Action { get; set; }

@@ -6,6 +6,6 @@ namespace AProjectManager.Models
     {
         public string GroupName { get; set; }
 
-        public List<string> ProjectSlugs { get; set; }
+        public List<string> RepositorySlugs { get; set; }
     }
 }

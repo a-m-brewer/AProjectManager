@@ -76,7 +76,9 @@ namespace AProjectManager.Cli
             switch (group.Action)
             {
                 case RepositoryGroupAction.Add:
+                    Console.WriteLine($"Adding group: {group.GroupName}");
                     var groupResult = await repositoryGroupManager.Add(group.ToAdd());
+                    Console.WriteLine($"Added group: {group.GroupName}");
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

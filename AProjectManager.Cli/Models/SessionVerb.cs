@@ -7,8 +7,8 @@ namespace AProjectManager.Cli.Models
     [Verb("session", HelpText = "Start a working session with a set of repoisitories")]
     public class SessionVerb
     {
-        [Option('p', "project", HelpText = "Start a session from an existing Project Group")]
-        public string ProjectName { get; set; }
+        [Option('g', "group", HelpText = "Start a session from an existing Repository Group")]
+        public string GroupName { get; set; }
 
         [Option('b', "branch", HelpText = "The name of the branch for this session")]
         public string BranchName { get; set; }

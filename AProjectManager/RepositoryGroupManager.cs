@@ -33,7 +33,7 @@ namespace AProjectManager
             
             updatedItem.RepositorySlugs ??= new List<string>();
             
-            var toAdd = groupAddRequest.ProjectSlugs.Where(w => !updatedItem.RepositorySlugs.Contains(w));
+            var toAdd = groupAddRequest.RepositorySlugs.Where(w => !updatedItem.RepositorySlugs.Contains(w));
 
             var (repositoriesThatExist, repositoriesThatDoNotExist) = _repositoryRegisterManager.RepositoryExistInRegister(toAdd).SplitExistingAndNonExisting();
 

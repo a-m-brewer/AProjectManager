@@ -11,7 +11,7 @@ namespace AProjectManager.Cli.Converters
             {
                 BranchName = sessionVerb.BranchName,
                 Checkout = sessionVerb.Checkout,
-                RepositoryGroupName = sessionVerb.ProjectName,
+                RepositoryGroupName = sessionVerb.GroupName,
                 Slugs = sessionVerb.Slugs
             };
         }
