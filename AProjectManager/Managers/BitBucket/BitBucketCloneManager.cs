@@ -10,7 +10,7 @@ using AProjectManager.Models;
 using AProjectManager.Persistence.FileData;
 using Avoid.Cli;
 
-namespace AProjectManager
+namespace AProjectManager.Managers.BitBucket
 {
     public class BitBucketCloneManager : ICloneManager
     {
