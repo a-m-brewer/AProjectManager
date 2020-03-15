@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using AProjectManager.Domain.BitBucket;
+using AProjectManager.BitBucket.Models;
 
 namespace AProjectManager.BitBucket
 {

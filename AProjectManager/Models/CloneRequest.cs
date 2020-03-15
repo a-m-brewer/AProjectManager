@@ -1,4 +1,4 @@
-using AProjectManager.Domain.BitBucket;
+using AProjectManager.BitBucket.Models;
 
 namespace AProjectManager.Models
 {

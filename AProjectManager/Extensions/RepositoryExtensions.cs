@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using AProjectManager.Domain.BitBucket;
-using AProjectManager.Domain.Git;
+using AProjectManager.BitBucket.Models;
+using AProjectManager.Git.Models;
 
 namespace AProjectManager.Extensions
 {
@@ -18,7 +18,7 @@ namespace AProjectManager.Extensions
                     Location = string.IsNullOrEmpty(cloneDirectory) ? repo.Slug : Path.Combine(cloneDirectory, repo.Slug),
                     Name = repo.Name
                 },
-                Origin = new Domain.Git.Repository
+                Origin = new Repository
                 {
                     Location = repo.Links.Clone.First(f => f.Name == "https").Href,
                     Name = $"origin/{repo.Slug}"

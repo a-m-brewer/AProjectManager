@@ -1,5 +1,5 @@
+using AProjectManager.BitBucket.Models;
 using AProjectManager.Cli.Models;
-using AProjectManager.Domain.BitBucket;
 
 namespace AProjectManager.Cli.Converters
 {

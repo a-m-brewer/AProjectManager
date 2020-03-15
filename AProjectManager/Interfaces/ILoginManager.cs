@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using AProjectManager.Domain.BitBucket;
+using AProjectManager.BitBucket.Models;
 using AProjectManager.Models;
 
 namespace AProjectManager.Interfaces

@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using AProjectManager.Domain.Git;
+using AProjectManager.Git.Models;
 using AProjectManager.Models;
 
 namespace AProjectManager.Interfaces

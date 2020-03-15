@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
-using AProjectManager.Domain.BitBucket;
+using AProjectManager.BitBucket.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 

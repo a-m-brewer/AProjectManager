@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 
-namespace AProjectManager.Domain.Git
+namespace AProjectManager.Git.Models
 {
     public class LocalRepository : IRepository
     {

@@ -1,4 +1,4 @@
-namespace AProjectManager.Domain.Git
+namespace AProjectManager.Git.Models
 {
     public class RepositoryRemoteLink
     {

@@ -1,4 +1,4 @@
-namespace AProjectManager.Domain.BitBucket
+namespace AProjectManager.BitBucket.Models
 {
     public class Token
     {

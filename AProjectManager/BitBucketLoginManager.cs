@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using AProjectManager.BitBucket;
+using AProjectManager.BitBucket.Models;
 using AProjectManager.Constants;
-using AProjectManager.Domain.BitBucket;
 using AProjectManager.Interfaces;
 using AProjectManager.Models;
 using AProjectManager.Persistence.FileData;

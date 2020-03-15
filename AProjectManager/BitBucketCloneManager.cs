@@ -36,7 +36,7 @@ namespace AProjectManager
 
             foreach (var cloneProcess in repositoriesDto
                 .Select(link => RepositoryManager
-                    .Clone(Domain.Git.Clone.Create(link.Local.Location, link.Origin.Location, link.Local.Name))
+                    .Clone(Git.Models.Clone.Create(link.Local.Location, link.Origin.Location, link.Local.Name))
                     .ToRunnableProcess()))
             {
                 cloneProcess.Start();

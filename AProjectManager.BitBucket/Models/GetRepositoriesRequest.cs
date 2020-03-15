@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Specialized;
 
-namespace AProjectManager.Domain.BitBucket
+namespace AProjectManager.BitBucket.Models
 {
     public class GetRepositoriesRequest
     {

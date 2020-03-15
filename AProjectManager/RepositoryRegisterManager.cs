@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using AProjectManager.Constants;
-using AProjectManager.Domain.Git;
+using AProjectManager.Git.Models;
 using AProjectManager.Interfaces;
 using AProjectManager.Models;
 using AProjectManager.Persistence.FileData;

@@ -1,5 +1,5 @@
 using System.IO;
-using AProjectManager.Domain.Git;
+using AProjectManager.Git.Models;
 using Avoid.Cli;
 
 namespace AProjectManager.Git
