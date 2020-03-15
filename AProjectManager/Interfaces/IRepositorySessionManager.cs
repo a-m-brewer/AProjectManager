@@ -2,7 +2,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using AProjectManager.Models;
 
-namespace AProjectManager
+namespace AProjectManager.Interfaces
 {
     public interface IRepositorySessionManager
     {

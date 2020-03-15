@@ -8,7 +8,7 @@ using AProjectManager.Models;
 using AProjectManager.Persistence.FileData;
 using AProjectManager.Utils;
 
-namespace AProjectManager
+namespace AProjectManager.Managers
 {
     public class RepositoryGroupManager : IRepositoryGroupManager
     {

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using AProjectManager.Constants;
@@ -7,7 +6,7 @@ using AProjectManager.Interfaces;
 using AProjectManager.Models;
 using AProjectManager.Persistence.FileData;
 
-namespace AProjectManager
+namespace AProjectManager.Managers
 {
     public class RepositoryRegisterManager : IRepositoryRegisterManager
     {

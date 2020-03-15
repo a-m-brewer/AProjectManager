@@ -7,6 +7,8 @@ using AProjectManager.Constants;
 using AProjectManager.Enums;
 using AProjectManager.Extensions;
 using AProjectManager.Interfaces;
+using AProjectManager.Managers;
+using AProjectManager.Managers.BitBucket;
 using AProjectManager.Models;
 using AProjectManager.Persistence.FileData;
 using Autofac;

@@ -13,7 +13,7 @@ using AProjectManager.Persistence.FileData;
 using AProjectManager.Utils;
 using Avoid.Cli;
 
-namespace AProjectManager
+namespace AProjectManager.Managers
 {
     public class RepositorySessionManager : IRepositorySessionManager
     {
