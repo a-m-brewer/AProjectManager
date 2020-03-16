@@ -3,6 +3,7 @@ using CommandLine;
 
 namespace AProjectManager.Cli.Models
 {
+    [Verb("docker-compose", HelpText = "Run Docker Compose Actions on Repoitsory/Group/Session")]
     public class DockerComposeVerb
     {
         [Option('b', "build", HelpText = "Build the container locally", Default = true)]

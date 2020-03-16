@@ -97,22 +97,21 @@ namespace AProjectManager.Cli
             await using var scope = container.BeginLifetimeScope();
             var sessionManager = scope.Resolve<IRepositorySessionManager>();
 
-            RepositorySession repositorySession;
             switch (verb.Action)
             {
                 case RepositorySessionAction.Start:
                     Console.WriteLine($"Starting session: {verb.BranchName}");
-                    repositorySession = await sessionManager.Start(verb.ToSessionStartRequest());
+                    await sessionManager.Start(verb.ToSessionStartRequest());
                     Console.WriteLine($"Started session: {verb.BranchName}");
                     break;
                 case RepositorySessionAction.Checkout:
                     Console.WriteLine($"Checking out existing session: {verb.BranchName}"); 
-                    repositorySession = await sessionManager.Checkout(verb.ToSessionCheckoutRequest());
+                    await sessionManager.Checkout(verb.ToSessionCheckoutRequest());
                     Console.WriteLine($"Checked out existing session: {verb.BranchName}");
                     break;
                 case RepositorySessionAction.Exit:
                     Console.WriteLine($"Exiting out of session: {verb.BranchName}"); 
-                    repositorySession = await sessionManager.Exit(verb.ToSessionExitRequest());
+                    await sessionManager.Exit(verb.ToSessionExitRequest());
                     Console.WriteLine($"Exited out of session: {verb.BranchName}");
                     break;
                 default:
@@ -123,7 +122,27 @@ namespace AProjectManager.Cli
         public async Task DockerCompose(DockerComposeVerb verb)
         {
             Console.WriteLine(HeadingInfo.Default);
-            // TODO: Carry on with docker stuff
+            
+            var container = BuildContainer(Services.RepositoryGroupService);
+            
+            await using var scope = container.BeginLifetimeScope();
+            var dockerComposeManager = scope.Resolve<IDockerComposeManager>();
+
+            switch (verb.DockerAction)
+            {
+                case DockerAction.Up:
+                    Console.WriteLine($"Starting Docker Containers for {verb.Name} using {verb.FileName} build: {verb.Build}");
+                    await dockerComposeManager.Up(verb.ToDockerComposeUpRequest());
+                    Console.WriteLine($"Stated Docker Containers for {verb.Name} using {verb.FileName} build: {verb.Build}");
+                    break;
+                case DockerAction.Down:
+                    Console.WriteLine($"Stopping Docker Containers for {verb.Name} using {verb.FileName}");
+                    await dockerComposeManager.Down(verb.ToDockerComposeDownRequest());
+                    Console.WriteLine($"Stoped Docker Containers for {verb.Name} using {verb.FileName}");
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
 
         private User GetUser(ILoginManager loginManager, string userName, string password)
@@ -159,6 +178,7 @@ namespace AProjectManager.Cli
             containerBuilder.RegisterType<RepositoryGroupManager>().As<IRepositoryGroupManager>();
             containerBuilder.RegisterType<RepositorySessionManager>().As<IRepositorySessionManager>();
             containerBuilder.RegisterType<RepositoryRegisterManager>().As<IRepositoryRegisterManager>();
+            containerBuilder.RegisterType<DockerComposeManager>().As<IDockerComposeManager>();
         }
 
         private static void RegisterConfigManager(ContainerBuilder containerBuilder)

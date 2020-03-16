@@ -5,11 +5,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Avoid.Cli" Version="2020.3.7.10" />
+      <PackageReference Include="Avoid.Cli" Version="2020.3.16.11" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\AProjectManager.BitBucket\AProjectManager.BitBucket.csproj" />
+      <ProjectReference Include="..\AProjectManager.Docker\AProjectManager.Docker.csproj" />
       <ProjectReference Include="..\AProjectManager.Git\AProjectManager.Git.csproj" />
       <ProjectReference Include="..\AProjectManager.Persistence.FileData\AProjectManager.Persistence.FileData.csproj" />
     </ItemGroup>
