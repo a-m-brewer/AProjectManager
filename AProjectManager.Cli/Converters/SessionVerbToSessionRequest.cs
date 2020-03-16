@@ -12,7 +12,12 @@ namespace AProjectManager.Cli.Converters
                 BranchName = sessionVerb.BranchName,
                 Checkout = sessionVerb.Checkout,
                 RepositoryGroupName = sessionVerb.GroupName,
-                Slugs = sessionVerb.Slugs
+                Slugs = sessionVerb.Slugs,
+                DockerComposeMetaData = new DockerComposeMetaData
+                {
+                    ComposeFile = sessionVerb.DockerComposeFileName,
+                    Run = sessionVerb.DockerCompose
+                }
             };
         }
 
@@ -20,7 +25,12 @@ namespace AProjectManager.Cli.Converters
         {
             return new SessionExitRequest
             {
-                BranchName = sessionVerb.BranchName
+                BranchName = sessionVerb.BranchName,
+                DockerComposeMetaData = new DockerComposeMetaData
+                {
+                    ComposeFile = sessionVerb.DockerComposeFileName,
+                    Run = sessionVerb.DockerCompose
+                }
             };
         }
 
@@ -28,7 +38,12 @@ namespace AProjectManager.Cli.Converters
         {
             return new SessionCheckoutRequest
             {
-                BranchName = sessionVerb.BranchName
+                BranchName = sessionVerb.BranchName,
+                DockerComposeMetaData = new DockerComposeMetaData
+                {
+                    ComposeFile = sessionVerb.DockerComposeFileName,
+                    Run = sessionVerb.DockerCompose
+                }
             };
         }
     }

@@ -11,5 +11,6 @@ namespace AProjectManager.Models
         public IEnumerable<string> Slugs { get; set; }
         
         public bool Checkout { get; set; }
+        public DockerComposeMetaData DockerComposeMetaData { get; set; }
     }
 }

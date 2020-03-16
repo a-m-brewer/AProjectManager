@@ -17,13 +17,16 @@ namespace AProjectManager.Managers
     {
         private readonly IFileRepository _fileRepository;
         private readonly IRepositoryRegisterManager _repositoryRegisterManager;
+        private readonly IDockerComposeManager _dockerComposeManager;
 
         public RepositorySessionManager(
             IFileRepository fileRepository,
-            IRepositoryRegisterManager repositoryRegisterManager)
+            IRepositoryRegisterManager repositoryRegisterManager,
+            IDockerComposeManager dockerComposeManager)
         {
             _fileRepository = fileRepository;
             _repositoryRegisterManager = repositoryRegisterManager;
+            _dockerComposeManager = dockerComposeManager;
         }
         
         public async Task<RepositorySession> Start(SessionStartRequest sessionStartRequest, CancellationToken cancellationToken = default)
