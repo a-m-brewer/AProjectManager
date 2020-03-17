@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using AProjectManager.Cli.Models;
+using AProjectManager.Cli.Verbs;
 using CommandLine;
 
 namespace AProjectManager.Cli

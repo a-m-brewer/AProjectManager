@@ -1,6 +1,6 @@
 using CommandLine;
 
-namespace AProjectManager.Cli.Models
+namespace AProjectManager.Cli.Verbs
 {
     [Verb("clone", HelpText = "Clone Repositories from a remote service")]
     public class CloneVerb : HelperOptions

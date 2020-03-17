@@ -29,40 +29,71 @@ namespace AProjectManager.Managers
             _dockerComposeManager = dockerComposeManager;
         }
         
-        public async Task<RepositorySession> Start(SessionStartRequest sessionStartRequest, CancellationToken cancellationToken = default)
+        public async Task<RepositorySession> Start(SessionStartRequest request, CancellationToken cancellationToken = default)
         {
-            var repositorySession = GetSession(sessionStartRequest.BranchName);
+            var repositorySession = GetSession(request.BranchName);
             
-            if (sessionStartRequest.RepositoryGroupName != null && !TryImportRepositoryGroup(sessionStartRequest.RepositoryGroupName, repositorySession))
+            if (request.RepositoryGroupName != null && !TryImportRepositoryGroup(request.RepositoryGroupName, repositorySession))
             {
                 return repositorySession;
             }
 
-            if (sessionStartRequest.Slugs != null && !TryAddSlugsIfNotExist(sessionStartRequest.Slugs.ToList(), repositorySession))
+            if (request.Slugs != null && !TryAddSlugsIfNotExist(request.Slugs.ToList(), repositorySession))
             {
                 return repositorySession;
             }
 
             _fileRepository.WriteSession(repositorySession);
 
-            if (!sessionStartRequest.Checkout)
+            if (request.Checkout)
             {
-                return repositorySession;
+                CheckoutRepositories(repositorySession.RepositorySlugs, repositorySession.BranchName);
             }
-            
-            CheckoutRepositories(repositorySession.RepositorySlugs, repositorySession.BranchName);
+
+            if (request.DockerComposeMetaData.Run)
+            {
+                await _dockerComposeManager.Up(new DockerComposeUpRequest
+                {
+                    Build = true,
+                    FileName = request.DockerComposeMetaData.ComposeFile,
+                    Name = request.BranchName
+                }, cancellationToken);
+            }
 
             return repositorySession;
         }
 
-        public async Task<RepositorySession> Exit(SessionExitRequest sessionExitRequest, CancellationToken cancellationToken = default)
+        public async Task<RepositorySession> Exit(SessionExitRequest request, CancellationToken cancellationToken = default)
         {
-            return await GetSessionAndCheckout(sessionExitRequest.BranchName, "master", cancellationToken);
+            var checkout = await GetSessionAndCheckout(request.BranchName, "master", cancellationToken);
+            
+            if (request.DockerComposeMetaData.Run)
+            {
+                await _dockerComposeManager.Down(new DockerComposeDownRequest
+                {
+                    FileName = request.DockerComposeMetaData.ComposeFile,
+                    Name = request.BranchName
+                }, cancellationToken);
+            }
+            
+            return checkout;
         }
 
-        public async Task<RepositorySession> Checkout(SessionCheckoutRequest sessionCheckoutRequest, CancellationToken cancellationToken = default)
+        public async Task<RepositorySession> Checkout(SessionCheckoutRequest request, CancellationToken cancellationToken = default)
         {
-            return await GetSessionAndCheckout(sessionCheckoutRequest.BranchName, sessionCheckoutRequest.BranchName, cancellationToken);
+            var checkout = await GetSessionAndCheckout(request.BranchName, request.BranchName, cancellationToken);
+            
+            if (request.DockerComposeMetaData.Run)
+            {
+                await _dockerComposeManager.Up(new DockerComposeUpRequest
+                {
+                    Build = true,
+                    FileName = request.DockerComposeMetaData.ComposeFile,
+                    Name = request.BranchName
+                }, cancellationToken);
+            }
+
+            return checkout;
         }
 
         private async Task<RepositorySession> GetSessionAndCheckout(string sessionName, string branchName, CancellationToken cancellationToken = default)

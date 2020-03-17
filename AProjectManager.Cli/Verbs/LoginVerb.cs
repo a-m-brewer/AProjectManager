@@ -1,6 +1,6 @@
 using CommandLine;
 
-namespace AProjectManager.Cli.Models
+namespace AProjectManager.Cli.Verbs
 {
     [Verb("login", HelpText = "Login to a remote service like BitBucket")]
     public class LoginVerb : HelperOptions

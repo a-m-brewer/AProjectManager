@@ -1,7 +1,7 @@
 using AProjectManager.Cli.Enums;
 using CommandLine;
 
-namespace AProjectManager.Cli.Models
+namespace AProjectManager.Cli.Verbs
 {
     [Verb("docker-compose", HelpText = "Run Docker Compose Actions on Repoitsory/Group/Session")]
     public class DockerComposeVerb

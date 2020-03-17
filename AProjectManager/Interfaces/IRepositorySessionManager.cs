@@ -6,12 +6,12 @@ namespace AProjectManager.Interfaces
 {
     public interface IRepositorySessionManager
     {
-        Task<RepositorySession> Start(SessionStartRequest sessionStartRequest, CancellationToken cancellationToken = default);
+        Task<RepositorySession> Start(SessionStartRequest request, CancellationToken cancellationToken = default);
 
-        Task<RepositorySession> Exit(SessionExitRequest sessionExitRequest,
+        Task<RepositorySession> Exit(SessionExitRequest request,
             CancellationToken cancellationToken = default);
 
-        Task<RepositorySession> Checkout(SessionCheckoutRequest sessionCheckoutRequest,
+        Task<RepositorySession> Checkout(SessionCheckoutRequest request,
             CancellationToken cancellationToken = default);
     }
 }

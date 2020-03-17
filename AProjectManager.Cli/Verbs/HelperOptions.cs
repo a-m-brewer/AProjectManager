@@ -1,6 +1,6 @@
 using CommandLine;
 
-namespace AProjectManager.Cli.Models
+namespace AProjectManager.Cli.Verbs
 {
     public class HelperOptions
     {

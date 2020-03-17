@@ -1,9 +1,8 @@
 using System.Collections.Generic;
 using AProjectManager.Cli.Enums;
-using AProjectManager.Enums;
 using CommandLine;
 
-namespace AProjectManager.Cli.Models
+namespace AProjectManager.Cli.Verbs
 {
     [Verb("session", HelpText = "Start a working session with a set of repoisitories")]
     public class SessionVerb

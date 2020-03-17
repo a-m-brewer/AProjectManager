@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using AProjectManager.BitBucket;
 using AProjectManager.Cli.Converters;
 using AProjectManager.Cli.Enums;
-using AProjectManager.Cli.Models;
+using AProjectManager.Cli.Verbs;
 using AProjectManager.Constants;
 using AProjectManager.Extensions;
 using AProjectManager.Interfaces;
