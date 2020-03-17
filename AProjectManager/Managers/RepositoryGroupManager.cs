@@ -13,14 +13,14 @@ namespace AProjectManager.Managers
     public class RepositoryGroupManager : IRepositoryGroupManager
     {
         private readonly IFileRepository _fileRepository;
-        private readonly IRepositoryRegisterManager _repositoryRegisterManager;
+        private readonly IRepositoryProvider _repositoryProvider;
 
         public RepositoryGroupManager(
             IFileRepository fileRepository,
-            IRepositoryRegisterManager repositoryRegisterManager)
+            IRepositoryProvider repositoryProvider)
         {
             _fileRepository = fileRepository;
-            _repositoryRegisterManager = repositoryRegisterManager;
+            _repositoryProvider = repositoryProvider;
         }
         
         public async Task<RepositoryGroup> Add(GroupAddRequest groupAddRequest)
@@ -32,7 +32,7 @@ namespace AProjectManager.Managers
 
             var toAdd = groupAddRequest.RepositorySlugs.Where(w => !existingGroup.RepositorySlugs.Contains(w));
 
-            var (repositoriesThatExist, repositoriesThatDoNotExist) = _repositoryRegisterManager.RepositoryExistInRegister(toAdd).SplitExistingAndNonExisting();
+            var (repositoriesThatExist, repositoriesThatDoNotExist) = _repositoryProvider.RepositoriesExist(toAdd).SplitExistingAndNonExisting();
 
             if (repositoriesThatDoNotExist.Any() && !ConsoleEvents.YesNoInput($"Could not find slugs: {string.Join(", ", repositoriesThatDoNotExist)}. Continue? "))
             {

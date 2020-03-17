@@ -35,38 +35,5 @@ namespace AProjectManager.Managers
         {
             return _fileRepository.GetRepositoryRegister() ?? new RepositoryRegister();
         }
-
-        public Dictionary<string, bool> RepositoryExistInRegister(IEnumerable<string> repositorySlugs)
-        {
-            var repositories = GetAvailableRepositories()
-                .Select(s => s.Slug)
-                .ToList();
-
-            return repositorySlugs.ToDictionary(
-                repositorySlug => repositorySlug, 
-                repositorySlug => repositories.Contains(repositorySlug));
-        }
-
-        public List<RepositoryRemoteLink> GetAvailableRepositories()
-        {
-            var repositoryFiles = GetRegister();
-            return repositoryFiles.FileNames.SelectMany(fileName => _fileRepository.GetServiceRepositories(fileName).Repositories).ToList();
-        }
-
-        public List<RepositoryRemoteLink> GetAvailableRepositories(IEnumerable<string> slugs)
-        {
-            return (from repository in GetAvailableRepositories()
-                join slug in slugs on repository.Slug equals slug
-                select repository).ToList();
-        }
-
-        public List<RepositoryRemoteLink> GetAvailableRepositories(string name)
-        {
-            var repositories = _fileRepository.GetSession(name)?.RepositorySlugs 
-                               ?? _fileRepository.GetGroup(name)?.RepositorySlugs 
-                               ?? new List<string> {name};
-
-            return GetAvailableRepositories(repositories);
-        }
     }
 }

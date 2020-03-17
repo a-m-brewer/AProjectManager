@@ -11,16 +11,16 @@ namespace AProjectManager.Managers
 {
     public class DockerComposeManager : IDockerComposeManager
     {
-        private readonly IRepositoryRegisterManager _repositoryRegisterManager;
+        private readonly IRepositoryProvider _repositoryProvider;
 
-        public DockerComposeManager(IRepositoryRegisterManager repositoryRegisterManager)
+        public DockerComposeManager(IRepositoryProvider repositoryProvider)
         {
-            _repositoryRegisterManager = repositoryRegisterManager;
+            _repositoryProvider = repositoryProvider;
         }
 
         public async Task Up(DockerComposeUpRequest request, CancellationToken cancellationToken = default)
         {
-            var repositories = _repositoryRegisterManager.GetAvailableRepositories(request.Name);
+            var repositories = _repositoryProvider.GetAvailableRepositories(request.Name);
 
             foreach (var repository in repositories)
             {
@@ -34,7 +34,7 @@ namespace AProjectManager.Managers
 
         public async Task Down(DockerComposeDownRequest request, CancellationToken cancellationToken = default)
         {
-            var repositories = _repositoryRegisterManager.GetAvailableRepositories(request.Name);
+            var repositories = _repositoryProvider.GetAvailableRepositories(request.Name);
 
             foreach (var repository in repositories)
             {

@@ -4,7 +4,7 @@ using AProjectManager.Interfaces;
 using AProjectManager.Models;
 using AProjectManager.Persistence.FileData;
 
-namespace AProjectManager.Utils
+namespace AProjectManager.Repositories
 {
     public class FileRepository : IFileRepository
     {

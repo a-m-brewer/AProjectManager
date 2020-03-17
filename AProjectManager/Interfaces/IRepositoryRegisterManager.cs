@@ -8,9 +8,5 @@ namespace AProjectManager.Interfaces
     {
         RepositoryRegister UpdateRegister(string repositoriesFileName);
         RepositoryRegister GetRegister();
-        Dictionary<string, bool> RepositoryExistInRegister(IEnumerable<string> repositorySlugs);
-        List<RepositoryRemoteLink> GetAvailableRepositories();
-        List<RepositoryRemoteLink> GetAvailableRepositories(IEnumerable<string> slugs);
-        List<RepositoryRemoteLink> GetAvailableRepositories(string name);
     }
 }

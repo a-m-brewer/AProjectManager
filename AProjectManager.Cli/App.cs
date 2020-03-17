@@ -11,6 +11,7 @@ using AProjectManager.Managers;
 using AProjectManager.Managers.BitBucket;
 using AProjectManager.Models;
 using AProjectManager.Persistence.FileData;
+using AProjectManager.Repositories;
 using AProjectManager.Utils;
 using Autofac;
 using CommandLine.Text;
@@ -178,6 +179,7 @@ namespace AProjectManager.Cli
             containerBuilder.RegisterType<RepositoryGroupManager>().As<IRepositoryGroupManager>();
             containerBuilder.RegisterType<RepositorySessionManager>().As<IRepositorySessionManager>();
             containerBuilder.RegisterType<RepositoryRegisterManager>().As<IRepositoryRegisterManager>();
+            containerBuilder.RegisterType<RepositoryProvider>().As<IRepositoryProvider>();
             containerBuilder.RegisterType<DockerComposeManager>().As<IDockerComposeManager>();
         }
 

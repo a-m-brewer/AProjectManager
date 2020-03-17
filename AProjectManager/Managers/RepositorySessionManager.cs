@@ -16,17 +16,17 @@ namespace AProjectManager.Managers
     public class RepositorySessionManager : IRepositorySessionManager
     {
         private readonly IFileRepository _fileRepository;
-        private readonly IRepositoryRegisterManager _repositoryRegisterManager;
         private readonly IDockerComposeManager _dockerComposeManager;
+        private readonly IRepositoryProvider _repositoryProvider;
 
         public RepositorySessionManager(
             IFileRepository fileRepository,
-            IRepositoryRegisterManager repositoryRegisterManager,
-            IDockerComposeManager dockerComposeManager)
+            IDockerComposeManager dockerComposeManager,
+            IRepositoryProvider repositoryProvider)
         {
             _fileRepository = fileRepository;
-            _repositoryRegisterManager = repositoryRegisterManager;
             _dockerComposeManager = dockerComposeManager;
+            _repositoryProvider = repositoryProvider;
         }
         
         public async Task<RepositorySession> Start(SessionStartRequest request, CancellationToken cancellationToken = default)
@@ -152,7 +152,7 @@ namespace AProjectManager.Managers
                 
             var toAdd = slugs.Where(w => !repositorySession.RepositorySlugs.Contains(w));
                
-            var (repositoriesThatExist, repositoriesThatDoNotExist) = _repositoryRegisterManager.RepositoryExistInRegister(toAdd).SplitExistingAndNonExisting();
+            var (repositoriesThatExist, repositoriesThatDoNotExist) = _repositoryProvider.RepositoriesExist(toAdd).SplitExistingAndNonExisting();
 
             if (repositoriesThatDoNotExist.Any() && !ConsoleEvents.YesNoInput($"Could not find slugs: {string.Join(", ", repositoriesThatDoNotExist)}. Continue? "))
             {
@@ -167,7 +167,7 @@ namespace AProjectManager.Managers
 
         private void CheckoutRepositories(IEnumerable<string> repositorySlugs, string branchName)
         {
-            var repos = _repositoryRegisterManager
+            var repos = _repositoryProvider
                 .GetAvailableRepositories(repositorySlugs)
                 .Select(s => s.Local)
                 .ToList();
