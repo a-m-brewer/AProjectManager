@@ -49,10 +49,7 @@ namespace AProjectManager.Git
                 }
             }
 
-            RepositoryManager.Branch(localRepository, new List<Action<object, DataReceivedEventArgs>>
-            {
-                Callback
-            }).ToRunnableProcess().Start();
+            RepositoryManager.Branch(localRepository, Callback).ToRunnableProcess().Start();
 
             return branches;
         }
@@ -60,6 +57,23 @@ namespace AProjectManager.Git
         public static bool BranchExists(this LocalRepository localRepository, string branchName)
         {
             return GetBranches(localRepository).Select(s => s.Name).Contains(branchName);
+        }
+
+        public static string GetRemoteUrl(string localRepositoryPath)
+        {
+            var remote = string.Empty;
+
+            void Callback(object o, DataReceivedEventArgs e)
+            {
+                if (!string.IsNullOrWhiteSpace(e.Data))
+                {
+                    remote = e.Data.Replace(" ", "");
+                }
+            }
+
+            RepositoryManager.Config(localRepositoryPath, Callback).ToRunnableProcess().Start();
+
+            return remote;
         }
     }
 }

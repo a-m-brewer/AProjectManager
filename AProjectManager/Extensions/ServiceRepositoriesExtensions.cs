@@ -5,9 +5,9 @@ namespace AProjectManager.Extensions
 {
     public static class ServiceRepositoriesExtensions
     {
-        public static string GetFileName(this ServiceRepositories serviceRepositories)
+        public static string GetFileName(this RepositorySource repositorySource)
         {
-            return ConfigFiles.RepoConfigName(serviceRepositories.Service, serviceRepositories.Name);
+            return ConfigFiles.RepoConfigName(repositorySource.Domain, repositorySource.Name);
         }
     }
 }

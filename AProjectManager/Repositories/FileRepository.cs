@@ -26,14 +26,14 @@ namespace AProjectManager.Repositories
             return _fileConfigManager.GetFromFile<RepositorySession>(sessionName, ConfigPaths.RepositorySessions);
         }
 
-        public ServiceRepositories GetServiceRepositories(string serviceName, string userName)
+        public RepositorySource GetServiceRepositories(string serviceName, string userName)
         {
             return GetServiceRepositories(ConfigFiles.RepoConfigName(serviceName, userName));
         }
         
-        public ServiceRepositories GetServiceRepositories(string fileName)
+        public RepositorySource GetServiceRepositories(string fileName)
         {
-            return _fileConfigManager.GetFromFile<ServiceRepositories>(fileName, ConfigPaths.Repositories);
+            return _fileConfigManager.GetFromFile<RepositorySource>(fileName, ConfigPaths.Repositories);
         }
 
         public RepositoryRegister GetRepositoryRegister()
@@ -51,9 +51,9 @@ namespace AProjectManager.Repositories
             return _fileConfigManager.WriteData(repositorySession, repositorySession.Name, ConfigPaths.RepositorySessions);
         }
 
-        public ServiceRepositories WriteServiceRepositories(ServiceRepositories serviceRepositories)
+        public RepositorySource WriteServiceRepositories(RepositorySource repositorySource)
         {
-            var file =  _fileConfigManager.WriteData(serviceRepositories, serviceRepositories.GetFileName(), ConfigPaths.Repositories);
+            var file =  _fileConfigManager.WriteData(repositorySource, repositorySource.GetFileName(), ConfigPaths.Repositories);
             return file;
         }
 

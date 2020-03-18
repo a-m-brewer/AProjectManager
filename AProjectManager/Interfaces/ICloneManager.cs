@@ -6,6 +6,6 @@ namespace AProjectManager.Interfaces
 {
     public interface ICloneManager
     {
-        Task<ServiceRepositories> Clone(CloneRequest getRepositoriesRequest, CancellationToken cancellationToken = default);
+        Task<RepositorySource> Clone(CloneRequest getRepositoriesRequest, CancellationToken cancellationToken = default);
     }
 }

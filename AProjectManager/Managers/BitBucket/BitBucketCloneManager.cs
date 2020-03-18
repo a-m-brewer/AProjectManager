@@ -28,13 +28,14 @@ namespace AProjectManager.Managers.BitBucket
             _repositoryRegisterManager = repositoryRegisterManager;
         }
 
-        public async Task<ServiceRepositories> Clone(CloneRequest cloneRequest, CancellationToken cancellationToken = default)
+        public async Task<RepositorySource> Clone(CloneRequest cloneRequest, CancellationToken cancellationToken = default)
         {
             var existingRepository =
-                _fileRepository.GetServiceRepositories(Services.BitBucket, cloneRequest.GetRepositoriesRequest.User) ?? new ServiceRepositories
+                _fileRepository.GetServiceRepositories(Domains.BitBucket, cloneRequest.GetRepositoriesRequest.User) ?? new RepositorySource
                 {
                     Name = cloneRequest.GetRepositoriesRequest.User,
-                    Service = Services.BitBucket
+                    Domain = Domains.BitBucket,
+                    Source = Sources.BitBucket
                 };
             
             var existingSlugs = existingRepository.Repositories.Select(s => s.Slug).ToList();

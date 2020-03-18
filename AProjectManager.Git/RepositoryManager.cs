@@ -26,12 +26,12 @@ namespace AProjectManager.Git
 
         public static IProcess Fetch(LocalRepository localRepository)
         {
-            return ChangeDirGitProcess(localRepository, "fetch");
+            return ChangeDirGitProcess(localRepository.Location, "fetch");
         }
 
         public static IProcess Pull(LocalRepository localRepository)
         {
-            return ChangeDirGitProcess(localRepository, "pull");
+            return ChangeDirGitProcess(localRepository.Location, "pull");
         }
 
         public static IProcess Checkout(LocalRepository localRepository, Checkout checkout)
@@ -60,9 +60,9 @@ namespace AProjectManager.Git
             return process;
         }
 
-        public static IProcess Branch(LocalRepository localRepository, IEnumerable<Action<object, DataReceivedEventArgs>> dataReceivedCallback)
+        public static IProcess Branch(LocalRepository localRepository, params Action<object, DataReceivedEventArgs>[] dataReceivedCallback)
         {
-            var process = ChangeDirGitProcess(localRepository, "branch", b =>
+            var process = ChangeDirGitProcess(localRepository.Location, "branch", b =>
             {
                 b.AddFlag("-a");
 
@@ -75,7 +75,23 @@ namespace AProjectManager.Git
             return process;
         }
 
-        private static IProcess ChangeDirGitProcess(IRepository localRepository, string gitAction, params Action<IBuilderActions>[] extraActions)
+        public static IProcess Config(string localRepositoryLocation,
+            params Action<object, DataReceivedEventArgs>[] dataReceivedCallback)
+        {
+            var process = ChangeDirGitProcess(localRepositoryLocation, "config", b =>
+            {
+                b.AddFlagArgument("--get", "remote.origin.url");
+
+                foreach (var callback in dataReceivedCallback)
+                {
+                    b.AddDataReceivedCallback(callback);
+                }
+            });
+
+            return process;
+        }
+
+        private static IProcess ChangeDirGitProcess(string localRepositoryLocation, string gitAction, params Action<IBuilderActions>[] extraActions)
         {
             var originalDirectory = Directory.GetCurrentDirectory();
             var programBuilder = new CliProgramBuilder();
@@ -90,7 +106,7 @@ namespace AProjectManager.Git
                     action.Invoke(b);
                 }
                 
-                b.AddPreprocessAction(action => Directory.SetCurrentDirectory(localRepository.Location));
+                b.AddPreprocessAction(action => Directory.SetCurrentDirectory(localRepositoryLocation));
                 b.AddPostprocessAction(action => Directory.SetCurrentDirectory(originalDirectory));
             });
 

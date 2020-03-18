@@ -146,6 +146,27 @@ namespace AProjectManager.Cli
             }
         }
 
+        public async Task RepositorySource(RepositorySourceVerb repositorySourceVerb)
+        {
+            Console.WriteLine(HeadingInfo.Default);
+            
+            var container = BuildContainer(Services.RepositorySourceManager);
+            
+            await using var scope = container.BeginLifetimeScope();
+            var repositorySourceManager = scope.Resolve<IRepositorySourceManager>();
+
+            switch (repositorySourceVerb.Actions)
+            {
+                case RepositoryActions.Add:
+                    await repositorySourceManager.Add(repositorySourceVerb.ToAddRequest());
+                    break;
+                case RepositoryActions.List:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
         private User GetUser(ILoginManager loginManager, string userName, string password)
         {
             Console.WriteLine(HeadingInfo.Default);
@@ -189,6 +210,7 @@ namespace AProjectManager.Cli
             containerBuilder.RegisterType<FileManager>().As<IFileManager>();
             containerBuilder.RegisterType<YamlConfigManager>().As<IConfigManager>();
             containerBuilder.RegisterType<FileConfigManager>().As<IFileConfigManager>();
+            containerBuilder.RegisterType<RepositorySourceManager>().As<IRepositorySourceManager>();
             containerBuilder.RegisterType<FileRepository>().As<IFileRepository>();
         }
         

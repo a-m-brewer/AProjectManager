@@ -6,12 +6,12 @@ namespace AProjectManager.Interfaces
     {
         RepositoryGroup GetGroup(string groupName);
         RepositorySession GetSession(string sessionName);
-        ServiceRepositories GetServiceRepositories(string serviceName, string userName);
-        ServiceRepositories GetServiceRepositories(string fileName);
+        RepositorySource GetServiceRepositories(string serviceName, string userName);
+        RepositorySource GetServiceRepositories(string fileName);
         RepositoryRegister GetRepositoryRegister();
         RepositoryGroup WriteGroup(RepositoryGroup repositoryGroup);
         RepositorySession WriteSession(RepositorySession repositorySession);
-        ServiceRepositories WriteServiceRepositories(ServiceRepositories serviceRepositories);
+        RepositorySource WriteServiceRepositories(RepositorySource repositorySource);
         RepositoryRegister WriteRepositoryRegister(RepositoryRegister repositoryRegister);
     }
 }
