@@ -5,7 +5,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Avoid.Cli" Version="2020.3.16.11" />
+      <PackageReference Include="Avoid.Cli" Version="2020.3.18.11" />
     </ItemGroup>
 
     <ItemGroup>
