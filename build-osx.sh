@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 VERSION="$(date +'%Y.%m.%d').$(git rev-list --count HEAD)"
-FILENAME="apm.$VERSION"
+FILENAME="apm.OSX.$VERSION"
 
 mkdir -p release-bin
 
