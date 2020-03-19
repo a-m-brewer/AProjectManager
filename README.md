@@ -60,18 +60,24 @@ apm clone -u <username> -r <role> -s bitbucket -p <projectkey> -d <clonefolder>
 ~~~~
 
 __-u__ usename or group holding the repositories you want to clone
+
 __-r__ your role in the repository
+
 member: returns repositories to which the user has explicit read access
 contributor: returns repositories to which the user has explicit write access
 admin: returns repositories to which the user has explicit administrator access
 owner: returns all repositories owned by the current user
+
 __-s__ service the service to clone from (currently this is only bitbucket)
+
 __-p__ project key, bitbucket project key
+
 __-d__ folder you would like to clone all of the repositories to.
 
 This step will create two files in your config folder
 
 __RepositoryRegister.yml__: localtion of Repository Sources
+
 __Repositories/bitbucket-username.yml__: file containing all the information about the repositories cloned
 
 #### From Existing Repositories
@@ -95,8 +101,11 @@ apm group -a Add -g "Name of Group" -s repo_slug_1 repo_slug_2
 ~~~~
 
 __-a__ action
+
 __-g__ Name of the group
+
 __-s__ the repo slugs to add 
+
 e.g. for https://github.com/a-m-brewer/AProjectManager AProjectManager would be the slug
 
 ## Repository Sessions
@@ -110,11 +119,17 @@ apm session -g "Group Name" -b "Branch Name" -c -a "Start" -s extra_repo_slug -d
 ~~~~
 
 __-g__ an existing group to add to repository session
+
 __-b__ the name of the branch that the session creates
+
 __-c__ checkout on session start (default true)
+
 __-a__ action Start,Checkout,Exit
+
 __-s__ extra slugs to be a part of this session
+
 __-d__ start docker containers on session start
+
 __-f__ name of docker compose file (default docker-compose.yml)
 
 #### Checkout
@@ -142,8 +157,11 @@ apm docker-compose -b -f docker-compose-local.yml -n "CUS-9999-test" -a Up
 ~~~~
 
 __-b__ build docker containers
+
 __-f__ docker compose file
+
 __-n__ name of Repository Group/Session or Repository.
+
 __-a__ Action: Up or Down
 
 ### Down
