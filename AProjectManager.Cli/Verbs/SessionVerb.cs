@@ -13,7 +13,7 @@ namespace AProjectManager.Cli.Verbs
         [Option('b', "branch", HelpText = "The name of the branch for this session")]
         public string BranchName { get; set; }
         
-        [Option('s', "slugs", HelpText = "Other repositories to include during the session", Separator = ':')]
+        [Option('s', "slugs", HelpText = "Other repositories to include during the session", Separator = ' ')]
         public IEnumerable<string> Slugs { get; set; }
 
         [Option('c', "checkout", HelpText = "Checkout all included repositories on creation of session", Default = true)]

@@ -13,7 +13,7 @@ namespace AProjectManager.Cli.Verbs
         [Option('p', "project", HelpText = "The key of the project")]
         public string ProjectKey { get; set; }
 
-        [Option('d', "clone-directory", HelpText = "Where to Clone the Repositories to")]
+        [Option('d', "clone-directory", HelpText = "Where to Clone the Repositories to", Default = ".")]
         public string CloneDirectory { get; set; }
     }
 }
