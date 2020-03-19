@@ -4,7 +4,7 @@ A program for managing multiple git repos
 
 ## Features
 
-### Git and Docker Compose support.
+### Git and Docker Compose support
 
 Start and stop docker containers at once based on Repository Groups/Sessions.
 
@@ -38,6 +38,18 @@ c:\Users\username\.config\aprojectmanager
 ~~~~
 
 ## Getting Started
+
+### Install
+
+Linux/OSX
+
+1. Download latest release
+2. Copy to /usr/local/bin/apm
+
+Windows
+
+1. Download latest relase
+2. Put somewhere that is accessible via your PATH env variable
 
 ### Importing Repositories (Repository Source)
 
