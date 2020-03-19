@@ -64,8 +64,11 @@ __-u__ usename or group holding the repositories you want to clone
 __-r__ your role in the repository
 
 member: returns repositories to which the user has explicit read access
+
 contributor: returns repositories to which the user has explicit write access
+
 admin: returns repositories to which the user has explicit administrator access
+
 owner: returns all repositories owned by the current user
 
 __-s__ service the service to clone from (currently this is only bitbucket)
