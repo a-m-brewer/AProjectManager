@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using AProjectManager.Constants;
 using AProjectManager.Extensions;
 using AProjectManager.Interfaces;
@@ -21,9 +23,19 @@ namespace AProjectManager.Repositories
             return _fileConfigManager.GetFromFile<RepositoryGroup>(groupName, ConfigPaths.RepositoryGroups);
         }
 
+        public List<RepositoryGroup> GetGroups()
+        {
+            return _fileConfigManager.GetFilesInPath<RepositoryGroup>(ConfigPaths.RepositoryGroups);
+        }
+
         public RepositorySession GetSession(string sessionName)
         {
             return _fileConfigManager.GetFromFile<RepositorySession>(sessionName, ConfigPaths.RepositorySessions);
+        }
+
+        public List<RepositorySession> GetSessions()
+        {
+            return _fileConfigManager.GetFilesInPath<RepositorySession>(ConfigPaths.RepositorySessions);
         }
 
         public RepositorySource GetServiceRepositories(string serviceName, string userName)
@@ -36,11 +48,16 @@ namespace AProjectManager.Repositories
             return _fileConfigManager.GetFromFile<RepositorySource>(fileName, ConfigPaths.Repositories);
         }
 
+        public List<RepositorySource> GetServiceRepositories()
+        {
+            return _fileConfigManager.GetFilesInPath<RepositorySource>(ConfigPaths.Repositories);
+        }
+
         public RepositoryRegister GetRepositoryRegister()
         {
             return _fileConfigManager.GetFromFile<RepositoryRegister>(ConfigFiles.RepositoryRegister);
         }
-        
+
         public RepositoryGroup WriteGroup(RepositoryGroup repositoryGroup)
         {
             return _fileConfigManager.WriteData(repositoryGroup, repositoryGroup.GroupName, ConfigPaths.RepositoryGroups);

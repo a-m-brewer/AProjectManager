@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace AProjectManager.Persistence.FileData
 {
@@ -60,6 +61,27 @@ namespace AProjectManager.Persistence.FileData
             var filePath = _folderProvider.GetPathOfFile(folderPath, fileName);
             var stringData = _fileManager.GetData(filePath);
             return _configManager.Deserialize<T>(stringData);
+        }
+
+        public List<T> GetFilesInPath<T>(params string[] subDirs)
+        {
+            var path = new List<string>
+            {
+                _configFolderPath
+            };
+            
+            path.AddRange(subDirs);
+
+            var folderPath = Path.Combine(path.ToArray());
+
+            var filePaths = Directory.GetFiles(folderPath, "*.yml");
+
+            var allFileDataAsString = filePaths.Select(filePath => _fileManager.GetData(filePath));
+
+            return allFileDataAsString
+                .Select(fileDataAsString =>
+                    _configManager.Deserialize<T>(fileDataAsString))
+                .ToList();
         }
     }
 }
