@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Security.Principal;
 using AProjectManager.Git.Models;
 using Avoid.Cli;
 
@@ -60,13 +61,13 @@ namespace AProjectManager.Git
             return process;
         }
 
-        public static IProcess Branch(LocalRepository localRepository, params Action<object, DataReceivedEventArgs>[] dataReceivedCallback)
+        public static IProcess Branch(LocalRepository localRepository, params Action<object, DataReceivedEventArgs>[] dataReceivedCallbacks)
         {
             var process = ChangeDirGitProcess(localRepository.Location, "branch", b =>
             {
                 b.AddFlag("-a");
 
-                foreach (var action in dataReceivedCallback)
+                foreach (var action in dataReceivedCallbacks)
                 {
                     b.AddDataReceivedCallback(action);
                 }
@@ -75,6 +76,35 @@ namespace AProjectManager.Git
             return process;
         }
 
+        public static IProcess RevParse(LocalRepository localRepository,
+            params Action<object, DataReceivedEventArgs>[] dataReceivedCallbacks)
+        {
+            var process = ChangeDirGitProcess(localRepository.Location, "rev-parse", b =>
+            {
+                b.AddFlagArgument("--abbrev-ref", "HEAD");
+
+                foreach (var action in dataReceivedCallbacks)
+                {
+                    b.AddDataReceivedCallback(action);
+                }
+            });
+
+            return process;
+        }
+
+        public static IProcess Log(LocalRepository localRepository,
+            params Action<object, DataReceivedEventArgs>[] dataReceivedCallbacks)
+        {
+            return ChangeDirGitProcess(localRepository.Location, "log", b =>
+            {
+                b.AddFlag("--pretty=%B");
+                foreach (var action in dataReceivedCallbacks)
+                {
+                    b.AddDataReceivedCallback(action);
+                }
+            });
+        }
+        
         public static IProcess Config(string localRepositoryLocation,
             params Action<object, DataReceivedEventArgs>[] dataReceivedCallback)
         {

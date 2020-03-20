@@ -13,7 +13,77 @@ namespace AProjectManager.Git
         public static List<Branch> GetBranches(this LocalRepository localRepository)
         {
             var branches = new List<Branch>();
+            
+            RepositoryManager.Branch(localRepository, BuildBranchCallback(branches)).ToRunnableProcess().Start();
 
+            return branches;
+        }
+
+        public static bool BranchExists(this LocalRepository localRepository, string branchName)
+        {
+            return GetBranches(localRepository).Select(s => s.Name).Contains(branchName);
+        }
+
+        public static string CurrentBranch(this LocalRepository localRepository)
+        {
+            var branches = new List<Branch>();
+
+            RepositoryManager
+                .RevParse(localRepository, BuildBranchCallback(branches))
+                .ToRunnableProcess()
+                .Start();
+
+            return branches.FirstOrDefault()?.Name;
+        }
+
+        public static List<string> GetLogMessages(this LocalRepository localRepository)
+        {
+            var messages = new List<string>();
+
+            RepositoryManager
+                .Log(localRepository, BuildLogsCallback(messages))
+                .ToRunnableProcess()
+                .Start();
+
+            messages.Reverse();
+
+            return messages;
+        }
+
+        public static string GetRemoteUrl(string localRepositoryPath)
+        {
+            var remote = string.Empty;
+
+            void Callback(object o, DataReceivedEventArgs e)
+            {
+                if (!string.IsNullOrWhiteSpace(e.Data))
+                {
+                    remote = e.Data.Replace(" ", "");
+                }
+            }
+
+            RepositoryManager.Config(localRepositoryPath, Callback).ToRunnableProcess().Start();
+
+            return remote;
+        }
+        
+        private static Action<object, DataReceivedEventArgs> BuildLogsCallback(ICollection<string> messages)
+        {
+            void Callback(object o, DataReceivedEventArgs e)
+            {
+                if (string.IsNullOrEmpty(e.Data) || string.IsNullOrWhiteSpace(e.Data))
+                {
+                    return;
+                }
+                
+                messages.Add(e.Data);
+            }
+
+            return Callback;
+        }
+
+        private static Action<object, DataReceivedEventArgs> BuildBranchCallback(List<Branch> branches)
+        {
             void Callback(object o, DataReceivedEventArgs e)
             {
                 if (string.IsNullOrEmpty(e.Data))
@@ -49,31 +119,7 @@ namespace AProjectManager.Git
                 }
             }
 
-            RepositoryManager.Branch(localRepository, Callback).ToRunnableProcess().Start();
-
-            return branches;
-        }
-
-        public static bool BranchExists(this LocalRepository localRepository, string branchName)
-        {
-            return GetBranches(localRepository).Select(s => s.Name).Contains(branchName);
-        }
-
-        public static string GetRemoteUrl(string localRepositoryPath)
-        {
-            var remote = string.Empty;
-
-            void Callback(object o, DataReceivedEventArgs e)
-            {
-                if (!string.IsNullOrWhiteSpace(e.Data))
-                {
-                    remote = e.Data.Replace(" ", "");
-                }
-            }
-
-            RepositoryManager.Config(localRepositoryPath, Callback).ToRunnableProcess().Start();
-
-            return remote;
+            return Callback;
         }
     }
 }

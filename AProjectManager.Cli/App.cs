@@ -1,8 +1,10 @@
 using System;
 using System.Threading.Tasks;
 using AProjectManager.BitBucket;
+using AProjectManager.Cli.ConsoleServices;
 using AProjectManager.Cli.Converters;
 using AProjectManager.Cli.Enums;
+using AProjectManager.Cli.Interfaces;
 using AProjectManager.Cli.Verbs;
 using AProjectManager.Constants;
 using AProjectManager.Extensions;
@@ -172,6 +174,20 @@ namespace AProjectManager.Cli
             }
         }
 
+        public async Task Print(PrintVerb printVerb)
+        {
+            Console.WriteLine(HeadingInfo.Default);
+
+            var container = BuildContainer(Services.PrintService);
+
+            await using var scope = container.BeginLifetimeScope();
+            var printManager = scope.Resolve<IPrintManager>();
+            var tablePrinterService = scope.Resolve<ITablePrinterService>();
+
+            var rows = printManager.GetRepositoryData();
+            tablePrinterService.Print(rows);
+        }
+
         private User GetUser(ILoginManager loginManager, string userName, string password)
         {
             Console.WriteLine(HeadingInfo.Default);
@@ -217,6 +233,8 @@ namespace AProjectManager.Cli
             containerBuilder.RegisterType<FileConfigManager>().As<IFileConfigManager>();
             containerBuilder.RegisterType<RepositorySourceManager>().As<IRepositorySourceManager>();
             containerBuilder.RegisterType<FileRepository>().As<IFileRepository>();
+            containerBuilder.RegisterType<TablePrinterService>().As<ITablePrinterService>();
+            containerBuilder.RegisterType<PrintManager>().As<IPrintManager>();
         }
         
         private static void RegisterLoginManager(string service, ContainerBuilder containerBuilder)
