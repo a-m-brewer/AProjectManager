@@ -8,5 +8,6 @@ namespace AProjectManager.Interfaces
     {
         Task Up(DockerComposeUpRequest request, CancellationToken cancellationToken = default);
         Task Down(DockerComposeDownRequest downRequest, CancellationToken cancellationToken = default);
+        Task Super(DockerComposeSuperRequest request, CancellationToken cancellationToken = default);
     }
 }

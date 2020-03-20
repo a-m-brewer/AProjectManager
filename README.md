@@ -168,7 +168,7 @@ apm session -b "Branch Name" -a "Exit" -d -f docker-compose-local.yml
 ### Up
 
 ~~~~bash
-apm docker-compose -b -f docker-compose-local.yml -n "CUS-9999-test" -a Up
+apm docker-compose -b -f docker-compose-local.yml -n "Group or Session or Repo" -a Up
 ~~~~
 
 __-b__ build docker containers
@@ -182,5 +182,15 @@ __-a__ Action: Up or Down
 ### Down
 
 ~~~~bash
-apm docker-compose -b -f docker-compose-local.yml -n "CUS-9999-test" -a Down
+apm docker-compose -b -f docker-compose-local.yml -n "Group or Session or Repo" -a Down
+~~~~
+
+### Super
+
+Run any command currently not implemented yet on a repository group / session or repo.
+
+NOTE: remember quotes e.g "" around super arguments
+
+~~~~bash
+docker-compose -f docker-compose-local.yml -n "Group or Session or Repo" --super "up -d --build"
 ~~~~

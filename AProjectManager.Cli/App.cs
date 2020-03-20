@@ -128,7 +128,7 @@ namespace AProjectManager.Cli
             
             await using var scope = container.BeginLifetimeScope();
             var dockerComposeManager = scope.Resolve<IDockerComposeManager>();
-
+            
             switch (verb.DockerAction)
             {
                 case DockerAction.Up:
@@ -140,6 +140,11 @@ namespace AProjectManager.Cli
                     Console.WriteLine($"Stopping Docker Containers for {verb.Name} using {verb.FileName}");
                     await dockerComposeManager.Down(verb.ToDockerComposeDownRequest());
                     Console.WriteLine($"Stoped Docker Containers for {verb.Name} using {verb.FileName}");
+                    break;
+                case DockerAction.Super:
+                    Console.WriteLine($"Running Super Command for {verb.Name} using {verb.FileName}");
+                    await dockerComposeManager.Super(verb.ToDockerComposeSuperRequest());
+                    Console.WriteLine($"Ran Super Command for {verb.Name} using {verb.FileName}");
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

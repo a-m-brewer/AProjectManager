@@ -43,6 +43,8 @@ namespace AProjectManager.Managers
                 return repositorySession;
             }
 
+            repositorySession.Active = true;
+
             _fileRepository.WriteSession(repositorySession);
 
             if (request.Checkout)
@@ -99,6 +101,8 @@ namespace AProjectManager.Managers
         private async Task<RepositorySession> GetSessionAndCheckout(string sessionName, string branchName, CancellationToken cancellationToken = default)
         {
             var session = GetSession(sessionName);
+
+            session.Active = branchName != "master";
 
             if (!string.IsNullOrEmpty(session.RepositoryGroupName))
             {
@@ -174,7 +178,7 @@ namespace AProjectManager.Managers
             
             Console.WriteLine("Checking out available repositories");
 
-            GitDataRetriever.GetBranches(repos.First());
+            repos.First().GetBranches();
             
             foreach (var runnable in repos.Select(repo => new
             {

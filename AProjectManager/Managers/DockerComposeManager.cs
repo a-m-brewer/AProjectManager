@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AProjectManager.Docker;
@@ -43,6 +44,20 @@ namespace AProjectManager.Managers
                 Console.WriteLine($"Stopping Docker Container: {args}");
                 process.Start();
                 Console.WriteLine($"Stopped Docker Container: {args}");
+            }
+        }
+
+        public async Task Super(DockerComposeSuperRequest request, CancellationToken cancellationToken = default)
+        {
+            var repositories = _repositoryProvider.GetAvailableRepositories(request.Name);
+
+            foreach (var process in repositories
+                .Select(repository => Path.Combine(repository.Local.Location, request.FileName))
+                .Select(fullPath => DockerComposeProcessBuilder.Super(fullPath, request.Arguments.ToArray())))
+            {
+                Console.WriteLine($"running command {string.Join(" ", request.Arguments)}");
+                process.Start();
+                Console.WriteLine($"ran command {string.Join(" ", request.Arguments)}");
             }
         }
     }

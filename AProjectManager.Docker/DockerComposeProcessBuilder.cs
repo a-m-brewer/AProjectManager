@@ -46,5 +46,25 @@ namespace AProjectManager.Docker
 
             return process;
         }
+
+        public static IProcess Super(string fullPath, params string[] arguments)
+        {
+            var programBuilder = new CliProgramBuilder();
+
+            var process = programBuilder.Build(b =>
+            {
+                b.AddProgram("docker-compose");
+                b.AddFlagArgument("-f", fullPath);
+
+                foreach (var argument in arguments)
+                {
+                    b.AddArgument(argument, false);
+                }
+                
+                b.BuildArgumentsInAddOrder();
+            });
+
+            return process;   
+        }
     }
 }

@@ -1,3 +1,4 @@
+using System.Linq;
 using AProjectManager.Cli.Verbs;
 using AProjectManager.Models;
 
@@ -20,6 +21,16 @@ namespace AProjectManager.Cli.Converters
             return new DockerComposeDownRequest
             {
                 Build = verb.Build,
+                FileName = verb.FileName,
+                Name = verb.Name
+            };
+        }
+
+        public static DockerComposeSuperRequest ToDockerComposeSuperRequest(this DockerComposeVerb verb)
+        {
+            return new DockerComposeSuperRequest
+            {
+                Arguments = verb.Super.Split(" ").Where(s => !string.IsNullOrEmpty(s) && !string.IsNullOrWhiteSpace(s)),
                 FileName = verb.FileName,
                 Name = verb.Name
             };

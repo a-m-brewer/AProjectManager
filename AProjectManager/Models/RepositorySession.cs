@@ -8,5 +8,6 @@ namespace AProjectManager.Models
         public string BranchName { get; set; }
         public List<string> RepositorySlugs { get; set; } = new List<string>();
         public string RepositoryGroupName { get; set; }
+        public bool Active { get; set; }
     }
 }

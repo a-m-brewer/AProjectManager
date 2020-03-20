@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using AProjectManager.Cli.Enums;
 using CommandLine;
 
@@ -12,7 +13,9 @@ namespace AProjectManager.Cli.Verbs
         public string FileName { get; set; }
         [Option('n', "name", HelpText = "Name of the Group/Session or Repository")]
         public string Name { get; set; }
-        [Option('a', "action", HelpText = "docker compose action", Default = DockerAction.Up)]
+        [Option('a', "action", HelpText = "docker compose action", Default = DockerAction.Super)]
         public DockerAction DockerAction { get; set; }
+        [Option('s', "super", HelpText = "Run any docker compose command, put arguments after -, remember to put quotes around the command")]
+        public string Super { get; set; }
     }
 }
