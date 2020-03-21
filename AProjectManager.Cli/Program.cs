@@ -14,7 +14,7 @@ namespace AProjectManager.Cli
             
             var app = new App();
 
-            Parser.Default.ParseArguments<LoginVerb, CloneVerb, GroupVerb, SessionVerb, DockerComposeVerb, RepositorySourceVerb, PrintVerb>(args)
+            Parser.Default.ParseArguments<LoginVerb, CloneVerb, GroupVerb, SessionVerb, DockerComposeVerb, RepositorySourceVerb, PrintVerb, GitVerb>(args)
                 .WithParsed<LoginVerb>(verb => tasks.Add(app.Login(verb)))
                 .WithParsed<CloneVerb>(verb => tasks.Add(app.Clone(verb)))
                 .WithParsed<GroupVerb>(verb => tasks.Add(app.RepositoryGroup(verb)))
@@ -22,6 +22,7 @@ namespace AProjectManager.Cli
                 .WithParsed<DockerComposeVerb>(verb => tasks.Add(app.DockerCompose(verb)))
                 .WithParsed<RepositorySourceVerb>(verb => tasks.Add(app.RepositorySource(verb)))
                 .WithParsed<PrintVerb>(verb => tasks.Add(app.Print(verb)))
+                .WithParsed<GitVerb>(verb => tasks.Add(app.Git(verb)))
                 .WithNotParsed(errors =>
                 {
                     foreach (var error in errors)

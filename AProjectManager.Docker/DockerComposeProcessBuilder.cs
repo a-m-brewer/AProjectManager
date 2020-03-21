@@ -73,7 +73,10 @@ namespace AProjectManager.Docker
 
         public static void Print(object o, DataReceivedEventArgs e)
         {
-            Console.WriteLine(e.Data);
+            if (!string.IsNullOrEmpty(e.Data) && !string.IsNullOrWhiteSpace(e.Data))
+            {
+                Console.WriteLine(e.Data);
+            }
         }
     }
 }

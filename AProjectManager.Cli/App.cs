@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using AProjectManager.BitBucket;
 using AProjectManager.Cli.ConsoleServices;
@@ -225,6 +226,62 @@ namespace AProjectManager.Cli
             }
         }
 
+        public async Task Git(GitVerb verb)
+        {
+            Console.WriteLine(HeadingInfo.Default);
+            var container = BuildContainer(Services.PrintService);
+            await using var scope = container.BeginLifetimeScope();
+
+            var gitManager = scope.Resolve<IGitManager>();
+
+            switch (verb.Action)
+            {
+                case GitAction.Pull:
+                    if (verb.Names != null && verb.Names.Any())
+                    {
+                        await gitManager.Pull(verb.Names);
+                    }
+                    else
+                    {
+                        await gitManager.Pull();
+                    }
+                    break;
+                case GitAction.Fetch:
+                    if (verb.Names != null && verb.Names.Any())
+                    {
+                        await gitManager.Fetch(verb.Names);
+                    }
+                    else
+                    {
+                        await gitManager.Fetch();
+                    }
+                    break;
+                case GitAction.Checkout:
+                    if (verb.Names != null && verb.Names.Any())
+                    {
+                        await gitManager.Checkout(verb.Names, verb.Branch);
+                    }
+                    else
+                    {
+                        await gitManager.Checkout(verb.Branch);
+                    }
+                    break;
+                case GitAction.Super:
+                    var arguments = verb.Super.Split(" ");
+                    if (verb.Names != null && verb.Names.Any())
+                    {
+                        await gitManager.Super(verb.Names, arguments);
+                    }
+                    else
+                    {
+                        await gitManager.Super(arguments);
+                    }
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
         private User GetUser(ILoginManager loginManager, string userName, string password)
         {
             Console.WriteLine(HeadingInfo.Default);
@@ -272,6 +329,7 @@ namespace AProjectManager.Cli
             containerBuilder.RegisterType<FileRepository>().As<IFileRepository>();
             containerBuilder.RegisterType<TablePrinterService>().As<ITablePrinterService>();
             containerBuilder.RegisterType<PrintManager>().As<IPrintManager>();
+            containerBuilder.RegisterType<GitManager>().As<IGitManager>();
         }
         
         private static void RegisterLoginManager(string service, ContainerBuilder containerBuilder)

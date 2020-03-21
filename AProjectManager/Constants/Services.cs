@@ -7,5 +7,6 @@ namespace AProjectManager.Constants
         public const string RepositoryGroupService = nameof(RepositoryGroupService);
         public const string RepositorySessionService = nameof(RepositorySessionService);
         public const string PrintService = nameof(PrintService);
+        public const string GitService = nameof(GitService);
     }
 }
