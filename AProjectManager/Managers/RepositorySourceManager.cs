@@ -27,12 +27,17 @@ namespace AProjectManager.Managers
         
         public Task<List<RepositorySource>> Add(RepositorySourceAddRequest request)
         {
-            var remotePaths = (from path in request.RepositoryPaths
+            var directoriesToAdd = request.RepositoryPaths
+                .Select(path => new {remote = GitDataRetriever.GetRemoteUrl(path), path})
+                .Where(dir => Directory.Exists(Path.Combine(dir.path, ".git")) && !string.IsNullOrEmpty(dir.remote))
+                .ToList();
+            
+            var remotePaths = (from path in directoriesToAdd
                 select new
                 {
-                    path = Path.GetFullPath(path),
-                    slug = Path.GetFullPath(path).Split(Path.DirectorySeparatorChar).LastOrDefault(),
-                    remote = new Uri(GitDataRetriever.GetRemoteUrl(path))
+                    path = Path.GetFullPath(path.path),
+                    slug = Path.GetFullPath(path.path).Split(Path.DirectorySeparatorChar).LastOrDefault(),
+                    remote = new Uri(path.remote)
                 }).ToList();
 
             var remotePathsSplit = (from remotePath in remotePaths
@@ -45,11 +50,11 @@ namespace AProjectManager.Managers
                     user = remotePath.remote.Segments[1].Replace("/", " "),
                 }).ToList();
 
-            var repositorySources = remotePathsSplit.GroupBy(group => group.Host).Select(repositorySource =>
+            var repositorySources = remotePathsSplit.GroupBy(group => new {group.Host, group.user}).Select(repositorySource =>
                 new RepositorySource
                 {
-                    Name = repositorySource.First().user.Replace(" ", ""),
-                    Domain = repositorySource.Key,
+                    Name = repositorySource.Key.user.Replace(" ", ""),
+                    Domain = repositorySource.Key.Host,
                     Repositories = repositorySource.Select(repo => new RepositoryRemoteLink
                     {
                         Local = new LocalRepository

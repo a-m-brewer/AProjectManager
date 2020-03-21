@@ -1,10 +1,11 @@
-using System.Collections.Generic;
+using System; 
+using System.Diagnostics;
 using AProjectManager.Docker.Models;
 using Avoid.Cli;
 
 namespace AProjectManager.Docker
 {
-    public class DockerComposeProcessBuilder
+    public static class DockerComposeProcessBuilder
     {
         public static IProcess Up(DockerComposeArguments upRequest)
         {
@@ -27,6 +28,7 @@ namespace AProjectManager.Docker
                 }
 
                 b.BuildArgumentsInAddOrder();
+                b.AddDataReceivedCallback(Print);
             });
 
             return process;
@@ -42,6 +44,7 @@ namespace AProjectManager.Docker
                 b.AddFlagArgument("-f", downRequest.FullPath);
                 b.AddArgument("down", false);
                 b.BuildArgumentsInAddOrder();
+                b.AddDataReceivedCallback(Print);
             });
 
             return process;
@@ -62,9 +65,15 @@ namespace AProjectManager.Docker
                 }
                 
                 b.BuildArgumentsInAddOrder();
+                b.AddDataReceivedCallback(Print);
             });
 
             return process;   
+        }
+
+        public static void Print(object o, DataReceivedEventArgs e)
+        {
+            Console.WriteLine(e.Data);
         }
     }
 }
