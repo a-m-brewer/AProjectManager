@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using AProjectManager.Cli.CliServices;
 using AProjectManager.Cli.Verbs;
 using CommandLine;
 
@@ -8,21 +9,19 @@ namespace AProjectManager.Cli
 {
     class Program
     {
-        static async Task Main(string[] args)
+        private static async Task Main(string[] args)
         {
             var tasks = new List<Task>();
-            
-            var app = new App();
 
             Parser.Default.ParseArguments<LoginVerb, CloneVerb, GroupVerb, SessionVerb, DockerComposeVerb, RepositorySourceVerb, PrintVerb, GitVerb>(args)
-                .WithParsed<LoginVerb>(verb => tasks.Add(app.Login(verb)))
-                .WithParsed<CloneVerb>(verb => tasks.Add(app.Clone(verb)))
-                .WithParsed<GroupVerb>(verb => tasks.Add(app.RepositoryGroup(verb)))
-                .WithParsed<SessionVerb>(verb => tasks.Add(app.RepositorySession(verb)))
-                .WithParsed<DockerComposeVerb>(verb => tasks.Add(app.DockerCompose(verb)))
-                .WithParsed<RepositorySourceVerb>(verb => tasks.Add(app.RepositorySource(verb)))
-                .WithParsed<PrintVerb>(verb => tasks.Add(app.Print(verb)))
-                .WithParsed<GitVerb>(verb => tasks.Add(app.Git(verb)))
+                .WithParsed<LoginVerb>(verb => tasks.Add(new LoginService().Run(verb)))
+                .WithParsed<CloneVerb>(verb => tasks.Add(new CloneService().Run(verb)))
+                .WithParsed<GroupVerb>(verb => tasks.Add(new RepositoryGroupService().Run(verb)))
+                .WithParsed<SessionVerb>(verb => tasks.Add(new RepositorySessionService().Run(verb)))
+                .WithParsed<DockerComposeVerb>(verb => tasks.Add(new DockerComposeService().Run(verb)))
+                .WithParsed<RepositorySourceVerb>(verb => tasks.Add(new RepositorySourceService().Run(verb)))
+                .WithParsed<PrintVerb>(verb => tasks.Add(new PrintService().Run(verb)))
+                .WithParsed<GitVerb>(verb => tasks.Add(new GitService().Run(verb)))
                 .WithNotParsed(errors =>
                 {
                     foreach (var error in errors)

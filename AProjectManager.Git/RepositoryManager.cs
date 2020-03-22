@@ -19,7 +19,6 @@ namespace AProjectManager.Git
                 b.AddArgument("clone");
                 b.AddArgument(clone.Remote.Location);
                 b.AddArgument(clone.Local.Location);
-                b.AddDataReceivedCallback(Print);
             });
 
             return process;
@@ -149,18 +148,9 @@ namespace AProjectManager.Git
                 
                 b.AddPreprocessAction(action => Directory.SetCurrentDirectory(localRepositoryLocation));
                 b.AddPostprocessAction(action => Directory.SetCurrentDirectory(originalDirectory));
-                b.AddDataReceivedCallback(Print);
             });
 
             return process;
-        }
-
-        private static void Print(object o, DataReceivedEventArgs e)
-        {
-            if (!string.IsNullOrEmpty(e.Data) && !string.IsNullOrWhiteSpace(e.Data))
-            {
-                Console.WriteLine(e.Data);
-            }
         }
     }
 }
