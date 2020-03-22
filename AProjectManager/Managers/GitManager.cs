@@ -109,7 +109,7 @@ namespace AProjectManager.Managers
             {
                 Console.WriteLine("");
                 Console.WriteLine($"Running Super Command on: {repo.Slug}");
-                repo.Local.Super(arguments);
+                repo.Local.Super(arguments).ToRunnableProcess().Start();
                 Console.WriteLine($"Ran Super Command on: {repo.Slug}");
             }
         }
