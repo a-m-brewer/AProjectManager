@@ -101,6 +101,13 @@ namespace AProjectManager.Git
                 {
                     b.AddArgument(argument, false);
                     b.BuildArgumentsInAddOrder();
+                    b.AddDataReceivedCallback((o, args) =>
+                    {
+                        if (!string.IsNullOrEmpty(args.Data) && !string.IsNullOrWhiteSpace(args.Data))
+                        {
+                            Console.WriteLine(args.Data);
+                        }
+                    });
                 }
             });
         }

@@ -163,6 +163,49 @@ For exiting a session
 apm session -b "Branch Name" -a "Exit" -d -f docker-compose-local.yml
 ~~~~
 
+## Git
+
+### Pull
+
+#### Pull all Repositories
+
+~~~~bash
+apm git -a "Pull"
+~~~~
+
+For all git actions not specifying a name will perform the action on all repositories registed. 
+
+__-a__ action: Pull, Fetch, Checkout, Super
+
+#### Pull repositories by name
+
+This does not need to just be repository names, this can be Session or Group name.
+This is the same for all Git Actions e.g. Pull, Fetch and Super
+
+~~~~bash
+apm git -a "Pull" -n ButHowDoItComputer "Group Name" "Session Name"
+~~~~
+
+### Fetch
+
+~~~~bash
+apm git -a "Fetch" -n ButHowDoItComputer "Group Name" "Session Name"
+~~~~
+
+### Checkout 
+
+~~~~bash
+apm git -a "Checkout" -n ButHowDoItComputer "Group Name" "Session Name" -b "a-branch" 
+~~~~
+
+__-b__ existing or non existing branch name
+
+### Super
+
+Run any command not supported by AProjectManager on some repositories like above
+
+
+
 ## Docker Compose
 
 ### Up
@@ -199,3 +242,10 @@ docker-compose -f docker-compose-local.yml -n "Group or Session or Repo" --super
 
 ### Ideas
 
+Here are some ideas of features that could be added that would be a great thing to contribute.
+
+1. Display if there are changes on a branch when printing repositories
+2. Print Repositories by Group / Session
+3. Be able to add docker compose files to be part of a group / session.
+    - For example when have a set of containers that need to be ran as part of a group.
+    like a database.
