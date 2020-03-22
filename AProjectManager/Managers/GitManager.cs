@@ -72,7 +72,7 @@ namespace AProjectManager.Managers
             {
                 Console.WriteLine("");
                 Console.WriteLine($"Pulling updates for {repo.Slug}");
-                RepositoryManager.Pull(repo.Local).ToRunnableProcess().Start();
+                repo.Local.Pull().ToRunnableProcess().Start();
                 Console.WriteLine($"Pulled updates for {repo.Slug}");
             }
         }
@@ -83,7 +83,7 @@ namespace AProjectManager.Managers
             {
                 Console.WriteLine("");
                 Console.WriteLine($"Fetching updates for {repo.Slug}");
-                RepositoryManager.Fetch(repo.Local).ToRunnableProcess().Start();
+                repo.Local.Fetch().ToRunnableProcess().Start();
                 Console.WriteLine($"Fetched updates for {repo.Slug}");
             }
         }
@@ -94,7 +94,7 @@ namespace AProjectManager.Managers
             {
                 Console.WriteLine("");
                 Console.WriteLine($"Checking out: {repo.Slug} with branch name: {branchName}");
-                RepositoryManager.Checkout(repo.Local, new Checkout
+                repo.Local.Checkout(new Checkout
                 {
                     Branch = new Branch {Name = branchName},
                     Create = !repo.Local.BranchExists(branchName)

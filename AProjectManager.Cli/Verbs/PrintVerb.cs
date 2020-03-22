@@ -8,7 +8,5 @@ namespace AProjectManager.Cli.Verbs
     {
         [Option('t', "type", HelpText = "The type of resource e.g. Session you want to print", Default = ItemType.All)]
         public ItemType Type { get; set; }
-        [Option('n', "name", HelpText = "The name of the resource")]
-        public string Name { get; set; }
     }
 }

@@ -25,32 +25,32 @@ namespace AProjectManager.Cli.CliServices
                     var repos = printManager.GetRepositoryData();
                     tablePrinterService.Print(repos);
                     break;
-                case ItemType.RepositoryGroup:
-                    Console.WriteLine(nameof(ItemType.RepositoryGroup));
+                case ItemType.Group:
+                    Console.WriteLine(nameof(ItemType.Group));
                     var groups = printManager.GetGroupData();
                     tablePrinterService.Print(groups);
                     break;
-                case ItemType.RepositorySession:
-                    Console.WriteLine(nameof(ItemType.RepositorySession));
+                case ItemType.Session:
+                    Console.WriteLine(nameof(ItemType.Session));
                     var sessions = printManager.GetSessionData();
                     tablePrinterService.Print(sessions);
                     break;
-                case ItemType.RepositorySource:
-                    Console.WriteLine(nameof(ItemType.RepositorySource));
+                case ItemType.Source:
+                    Console.WriteLine(nameof(ItemType.Source));
                     var sources = printManager.GetRepositorySourcesData();
                     tablePrinterService.Print(sources);
                     break;
                 case ItemType.All:
-                    Console.WriteLine(nameof(ItemType.RepositorySource));
+                    Console.WriteLine(nameof(ItemType.Source));
                     var sourcesAll = printManager.GetRepositorySourcesData();
                     tablePrinterService.Print(sourcesAll);
                     Console.WriteLine(nameof(ItemType.Repository));
                     var reposAll = printManager.GetRepositoryData();
                     tablePrinterService.Print(reposAll);
-                    Console.WriteLine(nameof(ItemType.RepositoryGroup));
+                    Console.WriteLine(nameof(ItemType.Group));
                     var groupsAll = printManager.GetGroupData();
                     tablePrinterService.Print(groupsAll);
-                    Console.WriteLine(nameof(ItemType.RepositorySession));
+                    Console.WriteLine(nameof(ItemType.Session));
                     var sessionsAll = printManager.GetSessionData();
                     tablePrinterService.Print(sessionsAll);
                     break;

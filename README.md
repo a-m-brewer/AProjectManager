@@ -41,6 +41,8 @@ c:\Users\username\.config\aprojectmanager
 
 ### Install
 
+Download latest release from [here](https://github.com/a-m-brewer/AProjectManager/releases)
+
 Linux/OSX
 
 1. Download latest release
@@ -48,7 +50,7 @@ Linux/OSX
 
 Windows
 
-1. Download latest relase
+1. Download latest release
 2. Put somewhere that is accessible via your PATH env variable
 
 ### Importing Repositories (Repository Source)
@@ -204,7 +206,11 @@ __-b__ existing or non existing branch name
 
 Run any command not supported by AProjectManager on some repositories like above
 
+NOTE: remember quotes e.g "" around super arguments
 
+~~~~bash
+apm git -a "Super" -n ButHowDoItComputer "Group Name" "Session Name" -s "branch -a"
+~~~~
 
 ## Docker Compose
 
@@ -237,6 +243,24 @@ NOTE: remember quotes e.g "" around super arguments
 ~~~~bash
 docker-compose -f docker-compose-local.yml -n "Group or Session or Repo" --super "up -d --build"
 ~~~~
+
+## Print
+
+Used for printing out Sources, Repositories, Groups and Sessions
+
+### Print All
+
+~~~~bash
+apm print
+~~~~
+
+### Print Type
+
+~~~~bash
+apm print -t Session
+~~~~
+
+__-t__ types: Repository, Source, Session, Group
 
 ## Contributions
 
