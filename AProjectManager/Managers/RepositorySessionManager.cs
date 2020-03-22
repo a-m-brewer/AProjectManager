@@ -180,17 +180,33 @@ namespace AProjectManager.Managers
 
             repos.First().GetBranches();
             
-            foreach (var runnable in repos.Select(repo => new
+            foreach (var runnable in repos.Select(repo =>
             {
-                Repo = repo,
-                Processes = new List<IProcess>
+                var createBranch = !repo.BranchExists(branchName);
+
+                var processes = new List<IProcess>();
+
+                if (createBranch)
                 {
-                    RepositoryManager.Checkout(repo, new Checkout
+                    processes.AddRange(new List<IProcess>
                     {
-                        Branch = new Branch {Name = branchName},
-                        Create = !repo.BranchExists(branchName)
-                    })
+                        repo.Fetch(),
+                        repo.Pull()
+                    });
                 }
+
+                processes.Add(repo.Checkout(new Checkout
+                {
+                    Branch = new Branch {Name = branchName},
+                    Create = createBranch
+                }));
+                
+                return new
+                {
+                    Repo = repo,
+                    Processes = processes
+                };
+                
             }).Select(repo => new
             {
                 repo.Repo,
