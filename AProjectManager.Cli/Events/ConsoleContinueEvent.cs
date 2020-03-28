@@ -1,10 +1,11 @@
 using System;
+using AProjectManager.Interfaces;
 
-namespace AProjectManager.Utils
+namespace AProjectManager.Cli.Events
 {
-    public static class ConsoleEvents
+    public class ConsoleContinueEvent : IContinueEvent
     {
-        public static bool YesNoInput(string prompt)
+        public bool Continue(string prompt)
         {
             var yes = false;
             var inputComplete = false;

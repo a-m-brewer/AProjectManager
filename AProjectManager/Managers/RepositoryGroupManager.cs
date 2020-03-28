@@ -6,7 +6,6 @@ using AProjectManager.Extensions;
 using AProjectManager.Interfaces;
 using AProjectManager.Models;
 using AProjectManager.Persistence.FileData;
-using AProjectManager.Utils;
 
 namespace AProjectManager.Managers
 {
@@ -14,13 +13,16 @@ namespace AProjectManager.Managers
     {
         private readonly IFileRepository _fileRepository;
         private readonly IRepositoryProvider _repositoryProvider;
+        private readonly IContinueEvent _continueEvent;
 
         public RepositoryGroupManager(
             IFileRepository fileRepository,
-            IRepositoryProvider repositoryProvider)
+            IRepositoryProvider repositoryProvider,
+            IContinueEvent continueEvent)
         {
             _fileRepository = fileRepository;
             _repositoryProvider = repositoryProvider;
+            _continueEvent = continueEvent;
         }
         
         public async Task<RepositoryGroup> Add(GroupAddRequest groupAddRequest)
@@ -34,7 +36,7 @@ namespace AProjectManager.Managers
 
             var (repositoriesThatExist, repositoriesThatDoNotExist) = _repositoryProvider.RepositoriesExist(toAdd).SplitExistingAndNonExisting();
 
-            if (repositoriesThatDoNotExist.Any() && !ConsoleEvents.YesNoInput($"Could not find slugs: {string.Join(", ", repositoriesThatDoNotExist)}. Continue? "))
+            if (repositoriesThatDoNotExist.Any() && !_continueEvent.Continue($"Could not find slugs: {string.Join(", ", repositoriesThatDoNotExist)}. Continue? "))
             {
                 return existingGroup;
             }

@@ -8,7 +8,6 @@ using AProjectManager.Git;
 using AProjectManager.Git.Models;
 using AProjectManager.Interfaces;
 using AProjectManager.Models;
-using AProjectManager.Utils;
 using Avoid.Cli;
 
 namespace AProjectManager.Managers
@@ -18,15 +17,18 @@ namespace AProjectManager.Managers
         private readonly IFileRepository _fileRepository;
         private readonly IDockerComposeManager _dockerComposeManager;
         private readonly IRepositoryProvider _repositoryProvider;
+        private readonly IContinueEvent _continueEvent;
 
         public RepositorySessionManager(
             IFileRepository fileRepository,
             IDockerComposeManager dockerComposeManager,
-            IRepositoryProvider repositoryProvider)
+            IRepositoryProvider repositoryProvider,
+            IContinueEvent continueEvent)
         {
             _fileRepository = fileRepository;
             _dockerComposeManager = dockerComposeManager;
             _repositoryProvider = repositoryProvider;
+            _continueEvent = continueEvent;
         }
         
         public async Task<RepositorySession> Start(SessionStartRequest request, CancellationToken cancellationToken = default)
@@ -133,7 +135,7 @@ namespace AProjectManager.Managers
 
             if (repositoryGroup == null)
             {
-                return !ConsoleEvents.YesNoInput($"Could not find Repository Group: {repositoryGroupName}, Continue? ");
+                return !_continueEvent.Continue($"Could not find Repository Group: {repositoryGroupName}, Continue? ");
             }
 
             repositorySession.RepositoryGroupName = repositoryGroupName;
@@ -158,7 +160,7 @@ namespace AProjectManager.Managers
                
             var (repositoriesThatExist, repositoriesThatDoNotExist) = _repositoryProvider.RepositoriesExist(toAdd).SplitExistingAndNonExisting();
 
-            if (repositoriesThatDoNotExist.Any() && !ConsoleEvents.YesNoInput($"Could not find slugs: {string.Join(", ", repositoriesThatDoNotExist)}. Continue? "))
+            if (repositoriesThatDoNotExist.Any() && !_continueEvent.Continue($"Could not find slugs: {string.Join(", ", repositoriesThatDoNotExist)}. Continue? "))
             {
                 return false;
             }

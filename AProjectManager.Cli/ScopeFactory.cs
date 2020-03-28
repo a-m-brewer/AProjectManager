@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using AProjectManager.BitBucket;
 using AProjectManager.Cli.ConsoleServices;
+using AProjectManager.Cli.Events;
 using AProjectManager.Cli.Interfaces;
 using AProjectManager.Constants;
 using AProjectManager.Interfaces;
@@ -29,6 +30,7 @@ namespace AProjectManager.Cli
             RegisterConfigClasses(containerBuilder);
             RegisterManagers(containerBuilder);
             RegisterLoginManager(service, containerBuilder);
+            RegisterCliSpecificClasses(containerBuilder);
             return containerBuilder.Build();
         }
 
@@ -66,6 +68,11 @@ namespace AProjectManager.Cli
                 default:
                     break;
             }
+        }
+
+        private static void RegisterCliSpecificClasses(ContainerBuilder containerBuilder)
+        {
+            containerBuilder.RegisterType<ConsoleContinueEvent>().As<IContinueEvent>();
         }
 
         public void Dispose()
